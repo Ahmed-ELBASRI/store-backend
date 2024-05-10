@@ -13,10 +13,6 @@ namespace store.Helper.Mapping
 
             CreateMap<Product, ProductResponseDto>();
 
-            CreateMap<CategorieRequestDto, Categorie>();
-
-            CreateMap<Categorie, CategorieResponseDto>();
-
             CreateMap<ClientRequestdto, Client>();
 
             CreateMap<Client, ClientResponsedto>();
