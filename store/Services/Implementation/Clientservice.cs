@@ -40,18 +40,9 @@ namespace store.Services.Implementation
             return await _context.Clients.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task UpdateClient(int id, Client newClient)
+        public Task UpdateClient(int id, Client newClient)
         {
-            var ClientModife = await _context.Clients.FirstOrDefaultAsync(p => p.Id == id);
-                ClientModife.Username = newClient.Username;
-                ClientModife.FidalitePoints = newClient.FidalitePoints;
-                ClientModife.Email = newClient.Email;
-                ClientModife.Password=newClient.Password;
-                ClientModife.FidalitePoints=newClient.FidalitePoints;
-            
-
-                _context.Clients.Update(ClientModife);
-                 await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

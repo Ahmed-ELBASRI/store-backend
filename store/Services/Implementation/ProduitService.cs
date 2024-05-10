@@ -38,16 +38,9 @@ namespace store.Services.Implementation
             return await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task UpdateProduct(int id, Product newProduct)
+        public Task UpdateProduct(int id, Product newProduct)
         {
-            var productToModife = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-            productToModife.Name = newProduct.Name;
-            productToModife.QuantiteProduitStock = newProduct.QuantiteProduitStock;
-            productToModife.Image = newProduct.Image;
-            productToModife.Description = newProduct.Description;
-
-            _context.Products.Update(productToModife);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

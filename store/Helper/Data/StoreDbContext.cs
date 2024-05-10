@@ -10,11 +10,10 @@ namespace store.Helper.Data
         {
         }
         public virtual DbSet<Product> Products { get; set; }
-        public virtual DbSet<Categorie> Categories { get; set; }
+        public virtual DbSet<Retour> Retours { get; set; }
         public virtual DbSet<Client> Clients { get; set; }
         public virtual DbSet<Command> Commands { get; set; }
-
-
+        public virtual DbSet<Paiement>Paiements { get; set; }
         public virtual DbSet<Variante> Variante { get; set; }
         public virtual DbSet<LignePanier> LignePanier { get; set; }
         public virtual DbSet<Review> reviews { get; set; }
@@ -26,5 +25,6 @@ namespace store.Helper.Data
         public virtual DbSet<Favorit> Favorits { get; set; }
         public  virtual DbSet<Att_Variante> att_variantes { get; set; }
         public  virtual DbSet<Att_Produit> att_produits { get; set; }
+
     }
 }

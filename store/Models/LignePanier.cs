@@ -5,14 +5,12 @@ namespace store.Models
 {
     public class LignePanier
     {
-        [Key]
-        public int IdPaiement { get; set; }
-        public DateTime DatePaimenet { get; set; }
-        public double Montant { get; set; }
-        public string modePaiement { get; set; }
-
-        public Command commande { get; set; }
-        [ForeignKey("Commande")]
-        public int CommandeId { get; set; }
+        public int Id { get; set; }
+        public int Quantite { get; set; }
+        public Panier Panier { get; set; }
+        [ForeignKey("Panier")]
+        public int PanierId { get; set; }
+        public Variante Variante { get; set; }
+        public int VarianteId { get; set; }
     }
 }
