@@ -10,12 +10,17 @@ namespace store.Helper.Mapping
         public StoreProfile()
         {
             CreateMap<ProductRequestDto, Product>();
-
             CreateMap<Product, ProductResponseDto>();
 
             CreateMap<ClientRequestdto, Client>();
-
             CreateMap<Client, ClientResponsedto>();
+
+            CreateMap<CommandRequestDto, Command>();
+            CreateMap<Command, CommandResponseDto>();
+
+            CreateMap<LigneCommandeRequestDto, LigneCommande>();
+            CreateMap<LigneCommande, LigneCommandeResponseDto>();
+
         }
     }
 }
