@@ -1,17 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using store.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace store.Models
+namespace store.Dtos.Responce
 {
-    public class Panier
+    public class PanierResponseDto
     {
-        [Key]
+
+        
         public int Id { get; set; }
         public Client? Client { get; set; }
         [ForeignKey("Client")]
         public int ClientId { get; set; }
         public IList<LignePanier> LPs { get; set; }
-
 
     }
 }
