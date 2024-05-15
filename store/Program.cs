@@ -21,12 +21,29 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Register Service
 builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IClientservice, ClientService>();
+
 builder.Services.AddScoped<ILignePanierService, LignePanierService>();
 builder.Services.AddScoped<IPanierService, PanierService>();
 
 
 
+
+builder.Services.AddScoped<ICommandService, CommandService>();
+builder.Services.AddScoped<ILigneCommandeService, LigneCommandeService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
+
 var app = builder.Build();
+// Enable CORS
+app.UseCors("AllowAll");
 
 
 

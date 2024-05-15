@@ -10,7 +10,7 @@ namespace store.Services.Implementation
     {
         private readonly StoreDbContext _context;
 
- 
+
 
         public ClientService(StoreDbContext context)
         {
@@ -40,9 +40,15 @@ namespace store.Services.Implementation
             return await _context.Clients.FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public Task UpdateClient(int id, Client newClient)
+        public async Task UpdateClient(int id, Client newClient)
         {
-            throw new NotImplementedException();
+            var ClientModife = await _context.Clients.FirstOrDefaultAsync(p => p.Id == id);
+            ClientModife.Username = newClient.Username;
+            ClientModife.Adresse = newClient.Adresse;
+            ClientModife.Email = newClient.Email;
+            ClientModife.Password = newClient.Password;
+            _context.Clients.Update(ClientModife);
+            await _context.SaveChangesAsync();
         }
     }
 }
