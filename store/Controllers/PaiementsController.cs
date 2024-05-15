@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
 using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Helper.Data;
 using store.Models;
 using store.Services.Contract;
 using store.Services.Implementation;
-using Stripe;
-using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,26 +62,12 @@ namespace store.Controllers
                 return Conflict("A payment with the same CommandeId already exists.");
             }
 
-            // Créer un paiement avec Stripe
-            var options = new PaymentIntentCreateOptions
-            {
-                Amount = (long)(paiementRequestDto.Montant * 100), // Montant en centimes
-                Currency = "eur", // Devise
-                PaymentMethodTypes = new List<string> { "card" }, // Types de méthode de paiement autorisés
-            };
-
-            var service = new PaymentIntentService();
-            var paymentIntent = await service.CreateAsync(options);
-
-            // Enregistrer le paiement dans votre base de données avec l'ID du paiement Stripe
             var paiement = _mapper.Map<Paiement>(paiementRequestDto);
-            paiement.StripePaymentIntentId = paymentIntent.Id;
             _context.Paiements.Add(paiement);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetPaiement), new { id = paiement.IdPaiement }, _mapper.Map<PaiementResponsedto>(paiement));
         }
-
 
 
         [HttpPut("{id}")]
@@ -118,43 +104,6 @@ namespace store.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-
-
-
-
-        [HttpPost("create-checkout-session")]
-        public ActionResult CreateCheckoutSession()
-        {
-            var options = new SessionCreateOptions
-            {
-                LineItems = new List<SessionLineItemOptions>
-        {
-          new SessionLineItemOptions
-          {
-            PriceData = new SessionLineItemPriceDataOptions
-            {
-              UnitAmount = 2000,
-              Currency = "usd",
-              ProductData = new SessionLineItemPriceDataProductDataOptions
-              {
-                Name = "T-shirt",
-              },
-            },
-            Quantity = 1,
-          },
-        },
-                Mode = "payment",
-                SuccessUrl = "http://localhost:4242/success",
-                CancelUrl = "http://localhost:4242/cancel",
-            };
-
-            var service = new SessionService();
-            Session session = service.Create(options);
-
-            Response.Headers.Add("Location", session.Url);
-            return new StatusCodeResult(303);
         }
     }
 }
