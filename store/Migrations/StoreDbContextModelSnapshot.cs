@@ -230,11 +230,13 @@ namespace store.Migrations
                     b.Property<DateTime>("DatePaimenet")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Montant")
+                    b.Property<double?>("Montant")
                         .HasColumnType("float");
 
+                    b.Property<string>("StripePaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("modePaiement")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdPaiement");
@@ -362,7 +364,6 @@ namespace store.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Commentaire")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateRetour")
@@ -372,7 +373,6 @@ namespace store.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TypeRetour")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -626,8 +626,7 @@ namespace store.Migrations
                 {
                     b.Navigation("Favorits");
 
-                    b.Navigation("Panier")
-                        .IsRequired();
+                    b.Navigation("Panier");
 
                     b.Navigation("Reviews");
                 });

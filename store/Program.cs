@@ -2,8 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using store.Helper.Data;
 using store.Services.Contract;
 using store.Services.Implementation;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 
@@ -22,6 +25,8 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Register Service
 builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IClientservice, ClientService>();
+builder.Services.AddScoped<IPaiementservice, Paiementservice>();
+builder.Services.AddScoped<IRetourservice, Retourservice>();
 
 
 
@@ -36,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SekretKey").Get<String>();
 
 app.UseAuthorization();
 
