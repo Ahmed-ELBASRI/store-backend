@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using store.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace store.Models
+namespace store.Dtos.Request
 {
-    public class Att_Variante
-    {
-        [Key]
-        public int Id { get; set; }
+    public class AttVarianteRequestDto { 
+
         public String cle { get; set; }
         public String Valeur { get; set; }
         public Variante? Variante { get; set; }

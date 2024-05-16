@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using store.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace store.Models
+namespace store.Dtos.Request
 {
-    public class PhotoVariante
+    public class PhotoVarianteRequestDto
     {
-        [Key]
-        public int IdPhoto { get; set; }
+
         public String UrlImage { get; set; }
         public Variante? Variante { get; set; }
         [ForeignKey("Variante")]

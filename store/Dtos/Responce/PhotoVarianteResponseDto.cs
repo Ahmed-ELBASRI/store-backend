@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using store.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace store.Models
+namespace store.Dtos.Responce
 {
-    public class PhotoVariante
+    public class PhotoVarianteResponseDto
     {
         [Key]
         public int IdPhoto { get; set; }

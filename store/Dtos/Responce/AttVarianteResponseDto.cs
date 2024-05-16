@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using store.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace store.Models
+namespace store.Dtos.Responce
 {
-    public class Att_Variante
+    public class AttVarianteResponseDto
     {
         [Key]
         public int Id { get; set; }

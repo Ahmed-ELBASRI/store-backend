@@ -2,6 +2,7 @@
 using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Models;
+using store.Services.Implementation;
 
 namespace store.Helper.Mapping
 {
@@ -16,6 +17,19 @@ namespace store.Helper.Mapping
             CreateMap<ClientRequestdto, Client>();
 
             CreateMap<Client, ClientResponsedto>();
+
+            CreateMap<VarianteRequestDto, Variante>();
+
+            CreateMap<Variante, VarianteResponseDto>();
+
+            CreateMap<AttVarianteRequestDto, Att_Variante>();
+
+            CreateMap<Att_Variante, AttVarianteResponseDto>();
+
+            CreateMap<PhotoVarianteRequestDto, PhotoVariante>();
+
+            CreateMap<PhotoVariante, PhotoVarianteResponseDto>();
+
         }
     }
 }

@@ -5,7 +5,7 @@ namespace store.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PaniersController : ControllerBase
+    public class PanierController : ControllerBase
     {
     }
 }
