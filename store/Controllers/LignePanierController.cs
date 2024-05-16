@@ -1,5 +1,3 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,38 +6,34 @@ using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Models;
 using store.Services.Contract;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace store.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PanierController : ControllerBase
+    public class LignePanierController : ControllerBase
     {
-
-        private readonly IPanierService _panierService;
+        private readonly ILignePanierService _lignePanierService;
         private readonly IMapper _mapper;
 
-        public PanierController(IPanierService panierService, IMapper mapper)
+        public LignePanierController(ILignePanierService lignePanierService, IMapper mapper)
         {
-            _panierService = panierService;
+            _lignePanierService = lignePanierService;
             _mapper = mapper;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PanierResponseDto>> GetPanier(int id)
+        public async Task<ActionResult<LignePanierResponseDto>> GetLignePanier(int id)
         {
             try
             {
-                var panier = await _panierService.GetPanier(id);
-                if (panier == null)
+                var lignePanier = await _lignePanierService.GetLignePanier(id);
+                if (lignePanier == null)
                 {
                     return NotFound();
                 }
-                var panierDto = _mapper.Map<PanierResponseDto>(panier);
-                return Ok(panierDto);
+                var lignePanierDto = _mapper.Map<LignePanierResponseDto>(lignePanier);
+                return Ok(lignePanierDto);
             }
             catch (Exception ex)
             {
@@ -48,27 +42,26 @@ namespace store.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PanierResponseDto>>> GetAllPaniers()
+        public async Task<ActionResult<IEnumerable<LignePanierResponseDto>>> GetAllLignePaniers()
         {
             try
             {
-                var paniers = await _panierService.GetAllPaniers();
-                var panierDtos = _mapper.Map<IEnumerable<PanierResponseDto>>(paniers);
-                return Ok(panierDtos);
+                var lignePaniers = await _lignePanierService.GetAllLignePaniers();
+                var lignePanierDtos = _mapper.Map<IEnumerable<LignePanierResponseDto>>(lignePaniers);
+                return Ok(lignePanierDtos);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-        }
-
+        }       
         [HttpPost]
-        public async Task<IActionResult> AddPanier(PanierRequestDto panierRequestDto)
+        public async Task<IActionResult> AddLignePanier(LignePanierRequestDto lignePanierRequestDto)
         {
             try
             {
-                var panier = _mapper.Map<Panier>(panierRequestDto);
-                var addedPanier = await _panierService.AddPanier(panier);
+                var lignepanier = _mapper.Map<LignePanier>(lignePanierRequestDto);
+                var addedLignePanier = await _lignePanierService.AddLignePanier(lignepanier);
                 return Ok();
             }
             catch (DbUpdateException ex)
@@ -78,18 +71,11 @@ namespace store.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePanier(int id, PanierRequestDto panierRequestDto)
+        public async Task<IActionResult> UpdateLignePanier(int id, LignePanier lignePanier)
         {
             try
             {
-                var existingPanier = await _panierService.GetPanier(id);
-                if (existingPanier == null)
-                {
-                    return NotFound();
-                }
-
-                var panier = _mapper.Map(panierRequestDto, existingPanier);
-                await _panierService.UpdatePanier(id, panier);
+                await _lignePanierService.UpdateLignePanier(id, lignePanier);
                 return NoContent();
             }
             catch (ArgumentException)
@@ -98,7 +84,7 @@ namespace store.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound("Panier not found");
+                return NotFound("LignePanier not found");
             }
             catch (Exception ex)
             {
@@ -107,22 +93,21 @@ namespace store.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePanier(int id)
+        public async Task<IActionResult> DeleteLignePanier(int id)
         {
             try
             {
-                await _panierService.DeletePanier(id);
+                await _lignePanierService.DeleteLignePanier(id);
                 return NoContent();
             }
             catch (KeyNotFoundException)
             {
-                return NotFound("Panier not found");
+                return NotFound("LignePanier not found");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
     }
 }

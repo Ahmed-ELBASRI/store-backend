@@ -5,6 +5,8 @@ namespace store.Helper.Data
 {
     public class StoreDbContext : DbContext
     {
+        internal object panier;
+
         public StoreDbContext(DbContextOptions<StoreDbContext> options)
         : base(options)
         {
