@@ -30,6 +30,14 @@ namespace store.Helper.Mapping
 
             CreateMap<PhotoVariante, PhotoVarianteResponseDto>();
 
+            CreateMap<CommandRequestDto, Command>();
+
+            CreateMap<Command, CommandResponseDto>();
+
+            CreateMap<LigneCommandeRequestDto, LigneCommande>();
+
+            CreateMap<LigneCommande, LigneCommandeResponseDto>();
+
         }
     }
 }
