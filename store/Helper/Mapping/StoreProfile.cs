@@ -18,6 +18,15 @@ namespace store.Helper.Mapping
 
             CreateMap<Client, ClientResponsedto>();
 
+            CreateMap<Retour, RetourResponsedto>();
+
+            CreateMap<RetourRequestdto, Retour>();
+
+            CreateMap<Paiement, PaiementResponsedto>();
+
+            CreateMap<PaiementRequestdto, Paiement>();
+
+
             CreateMap<VarianteRequestDto, Variante>();
 
             CreateMap<Variante, VarianteResponseDto>();
