@@ -6,6 +6,6 @@
         public string Description { get; set; }
 
         public int QuantiteProduitStock { get; set; }
-        public string Image { get; set; }  // a modifier 
+        public string Image { get; set; }  
     }
 }
