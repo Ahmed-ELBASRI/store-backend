@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.OpenApi.Writers;
 using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Models;
@@ -20,11 +21,24 @@ namespace store.Helper.Mapping
             CreateMap<PaiementRequestdto, Paiement>();
 
 
+
+            CreateMap<LignePanierRequestDto, LignePanier>();
+
+            CreateMap<LignePanier, LignePanierResponseDto>();
+
+            CreateMap<PanierRequestDto, Panier>();
+
+            CreateMap<Panier, PanierResponseDto>();
+
+
+
+
             CreateMap<CommandRequestDto, Command>();
             CreateMap<Command, CommandResponseDto>();
 
             CreateMap<LigneCommandeRequestDto, LigneCommande>();
             CreateMap<LigneCommande, LigneCommandeResponseDto>();
+
 
         }
     }

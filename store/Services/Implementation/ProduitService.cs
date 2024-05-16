@@ -40,7 +40,8 @@ namespace store.Services.Implementation
 
         public Task UpdateProduct(int id, Product newProduct)
         {
-            throw new NotImplementedException();
+           throw new NotImplementedException();
+
         }
     }
 }
