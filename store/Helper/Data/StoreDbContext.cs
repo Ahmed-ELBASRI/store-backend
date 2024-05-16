@@ -28,5 +28,6 @@ namespace store.Helper.Data
         public  virtual DbSet<Att_Variante> att_variantes { get; set; }
         public  virtual DbSet<Att_Produit> att_produits { get; set; }
 
+
     }
 }
