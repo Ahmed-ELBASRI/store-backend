@@ -1,3 +1,5 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,7 @@ namespace store.Controllers
     [ApiController]
     public class PanierController : ControllerBase
     {
+
         private readonly IPanierService _panierService;
         private readonly IMapper _mapper;
 
@@ -120,5 +123,6 @@ namespace store.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
     }
 }

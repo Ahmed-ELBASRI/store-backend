@@ -24,6 +24,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Register Service
 builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IClientservice, ClientService>();
+
+builder.Services.AddScoped<IVarianteService, VarianteService>();
+builder.Services.AddScoped<IAttVarianteService, AttVarianteService>();
+builder.Services.AddScoped<IPhotoVarianteService, PhotoVarianteService>();
  
 builder.Services.AddScoped<ILignePanierService, LignePanierService>();
 builder.Services.AddScoped<IPanierService, PanierService>();

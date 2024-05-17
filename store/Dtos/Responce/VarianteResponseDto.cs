@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using store.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace store.Models
+namespace store.Dtos.Responce
 {
-    public class Variante
+    public class VarianteResponseDto
     {
-        [Key]
         public int IdVariante { get; set; }
         public int QteStock { get; set; }
         public double Prix { get; set; }
