@@ -65,7 +65,6 @@ namespace store.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // If model state is invalid, return bad request with model state errors
                 return BadRequest(ModelState);
             }
 
