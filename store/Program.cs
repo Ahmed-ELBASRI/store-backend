@@ -22,25 +22,19 @@ builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(co
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Register Service
-builder.Services.AddScoped<IProduitService, ProduitService>();
+builder.Services.AddScoped<IProductService, store.Services.Implementation.ProductService>();
 builder.Services.AddScoped<IClientservice, ClientService>();
-
 builder.Services.AddScoped<IVarianteService, VarianteService>();
 builder.Services.AddScoped<IAttVarianteService, AttVarianteService>();
 builder.Services.AddScoped<IPhotoVarianteService, PhotoVarianteService>();
- 
 builder.Services.AddScoped<ILignePanierService, LignePanierService>();
 builder.Services.AddScoped<IPanierService, PanierService>();
-
-
 builder.Services.AddScoped<IPaiementservice, Paiementservice>();
 builder.Services.AddScoped<IRetourservice, Retourservice>();
-
-
-
-
 builder.Services.AddScoped<ICommandService, CommandService>();
 builder.Services.AddScoped<ILigneCommandeService, LigneCommandeService>();
+builder.Services.AddScoped<IAtt_ProduitService, Att_ProduitService>();
+builder.Services.AddScoped<IPhotoProduitService, PhotoProduitService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -51,12 +45,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 // Enable CORS
 app.UseCors("AllowAll");
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -22,7 +22,7 @@ namespace store.Helper.Data
         public virtual DbSet<Reclamation> Reclamations { get; set; }
         public virtual DbSet<PhotoVariante> photoVariantes { get; set; }
         public virtual DbSet<PhotoProduit> photoProduits { get; set; }
-         public virtual DbSet<Panier> paniers { get; set; }
+        public virtual DbSet<Panier> paniers { get; set; }
         public virtual DbSet<LigneCommande> ligneCommandes { get; set; }
         public virtual DbSet<Favorit> Favorits { get; set; }
         public  virtual DbSet<Att_Variante> att_variantes { get; set; }

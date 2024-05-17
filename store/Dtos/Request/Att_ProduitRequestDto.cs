@@ -1,8 +1,9 @@
-﻿namespace store.Models
+﻿using store.Models;
+
+namespace store.Dtos.Request
 {
-    public class Att_Produit
+    public class Att_ProduitRequestDto
     {
-        public int Id { get; set; }
         public String Cle { get; set; }
         public String Valeur { get; set; }
         public Product? Produit { get; set; }

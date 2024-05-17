@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OpenQA.Selenium;
 using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Models;
@@ -13,79 +14,102 @@ namespace store.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProduitService _produitService;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
-
-        public ProductController(IProduitService produitService, IMapper mapper)
+        public ProductController(IProductService productService, IMapper mapper)
         {
-            _produitService = produitService;
+            _productService = productService;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetProudcts()
+        public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAllProducts()
         {
-            var proudcts =  _mapper.Map<IEnumerable<ProductResponseDto>>(await _produitService.GetAllProducts());
-            return Ok(proudcts);
+            try
+            {
+                var products = await _productService.GetAllProductsAsync();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductResponseDto>> GetProudct(int id)
+        public async Task<ActionResult<ProductResponseDto>> GetProductById(int id)
         {
-
-            var proudcts = _mapper.Map<ProductResponseDto>(await _produitService.GetProductById(id));
-                if(proudcts==null)
-                {
-                   return NotFound();
-                }
-
-            return Ok(proudcts);
+            try
+            {
+                var product = await _productService.GetProductByIdAsync(id);
+                return Ok(product);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
 
- 
         [HttpPost]
-        public async Task<ActionResult> PostProduct(ProductRequestDto requestDto)
+        public async Task<ActionResult<ProductResponseDto>> CreateProduct(ProductRequestDto productRequestDto)
         {
-            var proudct = _mapper.Map<Product>(requestDto);
-            await _produitService.AddProduct(proudct);
-            return Ok();
+            try
+            {
+                var createdProduct = await _productService.CreateProductAsync(productRequestDto);
+                return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, ProductRequestDto productRequestDto)
+        {
+            try
+            {
+                var updatedProduct = await _productService.UpdateProductAsync(id, productRequestDto);
+                return Ok(updatedProduct);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
-
-            var proudcts = _mapper.Map<ProductResponseDto>(await _produitService.GetProductById(id));
-            if (proudcts == null)
+            try
             {
-                return NotFound();
+                await _productService.DeleteProductAsync(id);
+                return NoContent();
             }
-
-
-
-
-            await _produitService.DeleteProduct(id);
-          return Ok();
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateProduct(int id, ProductRequestDto requestDto)
-        {
-            var proudcts = _mapper.Map<ProductResponseDto>(await _produitService.GetProductById(id));
-            if (proudcts == null)
-            {
-                return NotFound();
-            }
-            var proudct = _mapper.Map<Product>(requestDto);
-            await _produitService.UpdateProduct(id, proudct);
-            return Ok();
-        }
 
 
     }
   
-    }
+}
 
 
 
