@@ -29,12 +29,12 @@ namespace store.Controllers
             {
                  var commands = await _commandService.GetAllCommand();
                 var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
-                //var options = new JsonSerializerOptions
-                //{
-                  //  ReferenceHandler = ReferenceHandler.Preserve
-                //};
-                //var json = JsonSerializer.Serialize(commandDtos, options);
-                return Ok(commandDtos);
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+                var json = JsonSerializer.Serialize(commandDtos, options);
+                return Ok(json);
             }
             catch (Exception ex)
             {
@@ -49,7 +49,6 @@ namespace store.Controllers
             {
                 ReferenceHandler = ReferenceHandler.Preserve
             };
-
             var command = await _commandService.GetCommandById(id);
             if (command == null)
             {
@@ -58,14 +57,7 @@ namespace store.Controllers
 
             var commandDto = _mapper.Map<CommandResponseDto>(command);
             var json = JsonSerializer.Serialize(commandDto, options);
-            List<Command> commands = new List<Command>();
-             Command cmd = new Command();
-            cmd.Id = 1;
-            cmd.DateCommande = DateTime.Now;
-            cmd.Etat = "etat";
-            cmd.Total = 12;
-            commands.Add(cmd);
-            return Ok(commands);
+            return Ok(json);
         }
         [HttpPost]
         public async Task<IActionResult> CreateCommand(CommandRequestDto requestDto)

@@ -56,6 +56,7 @@ namespace store.Controllers
             }
         }
 
+
         [HttpPost("{varianteId}")]
         public async Task<ActionResult<PhotoVarianteResponseDto>> UploadPhoto(int varianteId, [FromBody] PhotoVarianteRequestDto photoVarianteRequestDto)
         {
