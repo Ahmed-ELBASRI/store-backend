@@ -15,6 +15,9 @@ builder.Services.AddSwaggerGen();
 //Chaine De Conx 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
+// This is just to build the DbContextOptions
+//builder.Services.AddDbContext<StoreDbContext>(options =>
+//    options.UseSqlServer("Initial connection string"));
 
 // Auto Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -28,9 +31,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:4200", "http://localhost:4300")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
