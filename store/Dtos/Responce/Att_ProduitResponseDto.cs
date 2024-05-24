@@ -1,6 +1,8 @@
-﻿namespace store.Models
+﻿using store.Models;
+
+namespace store.Dtos.Responce
 {
-    public class Att_Produit
+    public class Att_ProduitResponseDto
     {
         public int Id { get; set; }
         public String Cle { get; set; }
