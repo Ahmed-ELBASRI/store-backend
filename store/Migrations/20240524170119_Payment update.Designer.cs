@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using store.Helper.Data;
 
@@ -11,9 +12,10 @@ using store.Helper.Data;
 namespace store.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240524170119_Payment update")]
+    partial class Paymentupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,13 +235,10 @@ namespace store.Migrations
                     b.Property<double?>("Montant")
                         .HasColumnType("float");
 
-<<<<<<< HEAD
                     b.Property<string>("PaymentIntentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-=======
->>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
                     b.Property<string>("modePaiement")
                         .HasColumnType("nvarchar(max)");
 
@@ -321,12 +320,6 @@ namespace store.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Prix")
                         .HasColumnType("float");

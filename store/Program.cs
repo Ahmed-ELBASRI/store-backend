@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using store.Helper.Data;
 using store.Services.Contract;
 using store.Services.Implementation;
+using store.Settings;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +51,15 @@ builder.Services.AddCors(options =>
     });
 });
 
+<<<<<<< HEAD
+// Configure Stripe settings
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
+
+
+
+=======
+>>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
 var app = builder.Build();
 // Enable CORS
 app.UseCors("AllowAll");
@@ -61,7 +72,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SekretKey").Get<String>();
+
+// Configure Stripe API Key
+var stripeSettings = app.Services.GetRequiredService<IOptions<StripeSettings>>().Value;
+StripeConfiguration.ApiKey = stripeSettings.SecretKey;
 
 app.UseAuthorization();
 
