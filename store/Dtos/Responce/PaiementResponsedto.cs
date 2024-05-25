@@ -5,7 +5,9 @@
         public int IdPaiement { get; set; }
         public DateTime? DatePaimenet { get; set; }
         public double? Montant { get; set; }
-        public string? ModePaiement { get; set; }
+        public string? modePaiement { get; set; }
+        public string? PaymentIntentId { get; set; }
+
         public int CommandeId { get; set; }
     }
 }
