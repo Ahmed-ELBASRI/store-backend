@@ -19,51 +19,50 @@ builder.Services.AddSwaggerGen();
 // Chaine De Conx 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
+// This is just to build the DbContextOptions
+//builder.Services.AddDbContext<StoreDbContext>(options =>
+//    options.UseSqlServer("Initial connection string"));
 
 // Auto Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Register Service
-builder.Services.AddScoped<IProduitService, ProduitService>();
+builder.Services.AddScoped<IProductService, store.Services.Implementation.ProductService>();
 builder.Services.AddScoped<IClientservice, ClientService>();
-
 builder.Services.AddScoped<IVarianteService, VarianteService>();
 builder.Services.AddScoped<IAttVarianteService, AttVarianteService>();
 builder.Services.AddScoped<IPhotoVarianteService, PhotoVarianteService>();
- 
 builder.Services.AddScoped<ILignePanierService, LignePanierService>();
 builder.Services.AddScoped<IPanierService, PanierService>();
-
-
 builder.Services.AddScoped<IPaiementservice, Paiementservice>();
 builder.Services.AddScoped<IRetourservice, Retourservice>();
-
-
-
-
 builder.Services.AddScoped<ICommandService, CommandService>();
 builder.Services.AddScoped<ILigneCommandeService, LigneCommandeService>();
+builder.Services.AddScoped<IAtt_ProduitService, Att_ProduitService>();
+builder.Services.AddScoped<IPhotoProduitService, PhotoProduitService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:4200", "http://localhost:4300")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
+<<<<<<< HEAD
 // Configure Stripe settings
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
 
 
+=======
+>>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
 var app = builder.Build();
 // Enable CORS
 app.UseCors("AllowAll");
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

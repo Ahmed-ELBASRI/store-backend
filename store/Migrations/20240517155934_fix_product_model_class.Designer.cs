@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using store.Helper.Data;
 
@@ -11,9 +12,10 @@ using store.Helper.Data;
 namespace store.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517155934_fix_product_model_class")]
+    partial class fix_product_model_class
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,13 +235,6 @@ namespace store.Migrations
                     b.Property<double?>("Montant")
                         .HasColumnType("float");
 
-<<<<<<< HEAD
-                    b.Property<string>("PaymentIntentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-=======
->>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
                     b.Property<string>("modePaiement")
                         .HasColumnType("nvarchar(max)");
 
