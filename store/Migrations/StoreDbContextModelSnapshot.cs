@@ -233,13 +233,12 @@ namespace store.Migrations
                     b.Property<double?>("Montant")
                         .HasColumnType("float");
 
-<<<<<<< HEAD
+
                     b.Property<string>("PaymentIntentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-=======
->>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
+
                     b.Property<string>("modePaiement")
                         .HasColumnType("nvarchar(max)");
 
