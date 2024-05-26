@@ -14,11 +14,12 @@ namespace store.Services.Implementation
 
         private readonly StoreDbContext _context;
         private readonly IMapper _mapper;
-
-        public PhotoProduitService(StoreDbContext context, IMapper mapper)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public PhotoProduitService(StoreDbContext context, IMapper mapper,IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _mapper = mapper;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public async Task<PhotoProduitResponseDto> GetPhotoProduitByIdAsync(int id)
@@ -94,6 +95,27 @@ namespace store.Services.Implementation
 
             _context.photoProduits.Remove(photoProduit);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> UploadFileAsync(IFormFile file)
+        {
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var newFileName = Path.GetRandomFileName() + extension;
+            string folderPath = @"C:\Users\Mohamed\Desktop\dashbord2\dashboard-angular\src\assets\uploads\";
+
+            
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var filePath = Path.Combine(folderPath, newFileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return Path.Combine(folderPath, newFileName);
         }
     }
 

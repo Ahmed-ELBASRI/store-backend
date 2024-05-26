@@ -6,7 +6,7 @@ namespace store.Dtos.Request
     {
         public String Cle { get; set; }
         public String Valeur { get; set; }
-        public Product? Produit { get; set; }
-        public int ProductId { get; set; }
+        //public Product? Produit { get; set; }
+        public int productId { get; set; }
     }
 }

@@ -56,7 +56,7 @@ namespace store.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductResponseDto>> CreateProduct(ProductRequestDto productRequestDto)
+        public async Task<ActionResult<ProductResponseDto>> CreateProduct([FromForm]ProductRequestDto productRequestDto)
         {
             try
             {

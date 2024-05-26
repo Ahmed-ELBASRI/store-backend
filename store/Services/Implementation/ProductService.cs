@@ -13,16 +13,19 @@ namespace store.Services.Implementation
     public class ProductService : IProductService
     {
         private readonly StoreDbContext _context;
-
-        public ProductService(StoreDbContext context)
+        private readonly IPhotoProduitService _photoProduitService;
+        public ProductService(StoreDbContext context, IPhotoProduitService photoProduitService)
         {
             _context = context;
+            _photoProduitService = photoProduitService;
         }
 
         public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()
         {
-            var products = await _context.Products.ToListAsync();
-            return products.Select(p => new ProductResponseDto { Id = p.Id, Name = p.Name, Description = p.Description, QteStock = p.QteStock, Prix = p.Prix });
+            var products = await _context.Products.Include(p =>p.PPs).ToListAsync();
+
+            var t = products.Select(p => new ProductResponseDto { Id = p.Id, Name = p.Name, Description = p.Description, QteStock = p.QteStock, Prix = p.Prix, Image = p.PPs.FirstOrDefault() != null ? p.PPs.FirstOrDefault().UrlImage.Split(new string[] { "\\src" }, StringSplitOptions.None)[1] : string.Empty });
+            return products.Select(p => new ProductResponseDto { Id = p.Id, Name = p.Name, Description = p.Description, QteStock = p.QteStock, Prix = p.Prix, Image = p.PPs.FirstOrDefault() != null ? p.PPs.FirstOrDefault().UrlImage.Split(new string[] { "\\src" }, StringSplitOptions.None)[1] : string.Empty });
         }
 
         public async Task<ProductResponseDto> GetProductByIdAsync(int id)
@@ -32,21 +35,59 @@ namespace store.Services.Implementation
             {
                 throw new NotFoundException($"Product with ID {id} not found.");
             }
-            return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix };
+            return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix, Image = product.PPs.FirstOrDefault() != null ? product.PPs.FirstOrDefault().UrlImage.Split(new string[] { "/src" }, StringSplitOptions.None)[1] : string.Empty };
         }
 
         public async Task<ProductResponseDto> CreateProductAsync(ProductRequestDto productRequestDto)
         {
-            var product = new Product
+            if (productRequestDto.File != null)
             {
-                Name = productRequestDto.Name,
-                Description = productRequestDto.Description,
-                QteStock = productRequestDto.QteStock,
-                Prix = productRequestDto.Prix
-            };
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-            return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix };
+                var photoP = new List<PhotoProduit>
+        {
+            new PhotoProduit
+            {
+                UrlImage = await _photoProduitService.UploadFileAsync(productRequestDto.File)
+            }
+        };
+                var product = new Product
+                {
+                    Name = productRequestDto.Name,
+                    Description = productRequestDto.Description,
+                    QteStock = productRequestDto.QteStock,
+                    Prix = productRequestDto.Prix,
+                    PPs = photoP,
+                };
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+                return new ProductResponseDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    QteStock = product.QteStock,
+                    Prix = product.Prix
+                };
+            }
+            else
+            {
+                var product = new Product
+                {
+                    Name = productRequestDto.Name,
+                    Description = productRequestDto.Description,
+                    QteStock = productRequestDto.QteStock,
+                    Prix = productRequestDto.Prix,
+                };
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+                return new ProductResponseDto
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    QteStock = product.QteStock,
+                    Prix = product.Prix
+                };
+            }
         }
 
         public async Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto)
