@@ -51,17 +51,15 @@ builder.Services.AddCors(options =>
     });
 });
 
-<<<<<<< HEAD
-// Configure Stripe settings
+
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 
 
 
-=======
->>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
+
 var app = builder.Build();
-// Enable CORS
+
 app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
