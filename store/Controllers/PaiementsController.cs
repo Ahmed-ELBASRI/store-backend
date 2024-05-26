@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium;
+using Microsoft.Extensions.Options;
 using store.Dtos.Request;
 using store.Dtos.Responce;
-using store.Helper.Data;
 using store.Models;
 using store.Services.Contract;
-using store.Services.Implementation;
+using store.Settings;
+using Stripe;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace store.Controllers
@@ -21,20 +19,21 @@ namespace store.Controllers
     public class PaiementController : ControllerBase
     {
         private readonly IPaiementservice _paiementService;
-        private readonly StoreDbContext _context;
         private readonly IMapper _mapper;
+        private readonly StripeSettings _stripeSettings;
 
-        public PaiementController(StoreDbContext context, IPaiementservice paiementService, IMapper mapper)
+        public PaiementController(IPaiementservice paiementService, IMapper mapper, IOptions<StripeSettings> stripeSettings)
         {
             _paiementService = paiementService;
             _mapper = mapper;
-            _context = context;
+            _stripeSettings = stripeSettings.Value;
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PaiementResponsedto>>> GetPaiements()
         {
-            var paiements = await _context.Paiements.ToListAsync();
+            var paiements = await _paiementService.GetPaiements();
             var paiementDtos = _mapper.Map<IEnumerable<PaiementResponsedto>>(paiements);
             return Ok(paiementDtos);
         }
@@ -42,48 +41,46 @@ namespace store.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PaiementResponsedto>> GetPaiement(int id)
         {
-            var paiement = await _context.Paiements.FindAsync(id);
-
-            if (paiement == null)
+            try
+            {
+                var paiement = await _paiementService.GetPaiement(id);
+                var paiementDto = _mapper.Map<PaiementResponsedto>(paiement);
+                return Ok(paiementDto);
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
-
-            var paiementDto = _mapper.Map<PaiementResponsedto>(paiement);
-            return Ok(paiementDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<PaiementResponsedto>> CreatePaiement(PaiementRequestdto paiementRequestDto)
         {
-            var existingPaiement = await _context.Paiements.FirstOrDefaultAsync(p => p.CommandeId == paiementRequestDto.CommandeId);
-            if (existingPaiement != null)
-            {
-                return Conflict("A payment with the same CommandeId already exists.");
-            }
-
             var paiement = _mapper.Map<Paiement>(paiementRequestDto);
-            _context.Paiements.Add(paiement);
-            await _context.SaveChangesAsync();
+            // Assuming you have a mechanism to set PaymentIntentId elsewhere
+            paiement.PaymentIntentId = paiement.PaymentIntentId ?? Guid.NewGuid().ToString(); // Ensure PaymentIntentId is not null
+            await _paiementService.CreatePaiement(paiement);
+            var paiementDto = _mapper.Map<PaiementResponsedto>(paiement);
 
-            return CreatedAtAction(nameof(GetPaiement), new { id = paiement.IdPaiement }, _mapper.Map<PaiementResponsedto>(paiement));
+            return CreatedAtAction(nameof(GetPaiement), new { id = paiement.IdPaiement }, paiementDto);
         }
 
-
         [HttpPut("{id}")]
-        public async Task<ActionResult<PaiementResponsedto>> UpdatePaiement(int id, PaiementRequestdto paiementRequestdto)
+        public async Task<ActionResult<PaiementResponsedto>> UpdatePaiement(int id, PaiementRequestdto paiementRequestDto)
         {
             try
             {
-                var paiement = await _paiementService.GetPaiement(id);
-                if (paiement == null)
+                var existingPaiement = await _paiementService.GetPaiement(id);
+                if (existingPaiement == null)
                 {
                     return NotFound();
                 }
-                _mapper.Map(paiementRequestdto, paiement);
-                await _paiementService.UpdatePaiement(id, paiement);
-                var updatedPaiementdto = _mapper.Map(paiementRequestdto, paiement);
-                return Ok(updatedPaiementdto);
+
+                _mapper.Map(paiementRequestDto, existingPaiement);
+                await _paiementService.UpdatePaiement(id, existingPaiement);
+                var updatedPaiementDto = _mapper.Map<PaiementResponsedto>(existingPaiement);
+
+                return Ok(updatedPaiementDto);
             }
             catch (Exception ex)
             {
@@ -94,16 +91,43 @@ namespace store.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePaiement(int id)
         {
-            var paiement = await _context.Paiements.FindAsync(id);
-            if (paiement == null)
+            try
+            {
+                var paiement = await _paiementService.GetPaiement(id);
+                if (paiement == null)
+                {
+                    return NotFound();
+                }
+
+                await _paiementService.DeletePaiement(id);
+                return NoContent();
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
+        }
 
-            _context.Paiements.Remove(paiement);
-            await _context.SaveChangesAsync();
+        [HttpPost("create-payment-intent")]
+        public async Task<ActionResult> CreatePaymentIntent(PaiementRequestdto paiementRequestDto)
+        {
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = (long)(paiementRequestDto.Montant * 100), // Montant en cents
+                Currency = "usd",
+                PaymentMethodTypes = new List<string> { "card" },
+            };
 
-            return NoContent();
+            var service = new PaymentIntentService();
+            PaymentIntent intent = await service.CreateAsync(options);
+
+            var paiement = _mapper.Map<Paiement>(paiementRequestDto);
+            paiement.PaymentIntentId = intent.Id;
+            await _paiementService.CreatePaiement(paiement);
+
+            return Ok(new { clientSecret = intent.ClientSecret });
         }
     }
 }
+
+

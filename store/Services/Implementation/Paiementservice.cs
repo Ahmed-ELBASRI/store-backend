@@ -39,7 +39,7 @@ namespace store.Services.Implementation
             }
         }
 
-        public async Task <Paiement> GetPaiement(int id)
+        public async Task<Paiement> GetPaiement(int id)
         {
             var paiement = await _context.Paiements.FindAsync(id);
             if (paiement == null)

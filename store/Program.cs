@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using store.Helper.Data;
 using store.Services.Contract;
 using store.Services.Implementation;
+using store.Settings;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +19,9 @@ builder.Services.AddSwaggerGen();
 // Chaine De Conx 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
+// This is just to build the DbContextOptions
+//builder.Services.AddDbContext<StoreDbContext>(options =>
+//    options.UseSqlServer("Initial connection string"));
 
 // Auto Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -39,12 +44,22 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:4200", "http://localhost:4300")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
+<<<<<<< HEAD
+// Configure Stripe settings
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
+
+
+
+=======
+>>>>>>> 55fe30edd7e5383a6c2268749788df751e269cad
 var app = builder.Build();
 // Enable CORS
 app.UseCors("AllowAll");
@@ -57,7 +72,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SekretKey").Get<String>();
+
+// Configure Stripe API Key
+var stripeSettings = app.Services.GetRequiredService<IOptions<StripeSettings>>().Value;
+StripeConfiguration.ApiKey = stripeSettings.SecretKey;
 
 app.UseAuthorization();
 

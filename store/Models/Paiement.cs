@@ -11,6 +11,7 @@ namespace store.Models
         public double? Montant { get; set; }
         public string? modePaiement { get; set; }
         public Command? commande { get; set; }
+        public string? PaymentIntentId { get; set; }
         [ForeignKey("Commande")]
         public int CommandeId { get; set; }
     }
