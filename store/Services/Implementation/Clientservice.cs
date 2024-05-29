@@ -27,6 +27,14 @@ namespace store.Services.Implementation
             var client = await dbContext.Clients.FirstOrDefaultAsync(v=> v.Email.Equals(cl.Email) && v.Password.Equals(cl.Password));
             return client;
         }
+        public async Task RegisterClient(Client cl,string ConnectionString)
+        {
+            cl.Adresse = "oujda";
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(ConnectionString);
+            await dbContext.AddAsync(cl);
+            await dbContext.SaveChangesAsync();
+
+        }
 
         public async Task AddClient(Client Client)
         {

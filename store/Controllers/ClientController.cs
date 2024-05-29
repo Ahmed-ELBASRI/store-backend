@@ -42,6 +42,14 @@ namespace store.Controllers
 
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(ClientRequestRegisterDto ClientRequest)
+        {
+            var client = _mapper.Map<Client>(ClientRequest);
+            await _clientService.RegisterClient(client,ClientRequest.ConnectionString);
+            return Ok();
+        }
+
         [HttpGet("jwt")]
         public IActionResult get()
         {
