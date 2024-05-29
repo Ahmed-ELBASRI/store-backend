@@ -68,6 +68,19 @@ namespace store.Controllers
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
+        [HttpPost("Produit")]
+        public async Task<ActionResult<ProductResponseDto>> CreateProduit(produitRequestDto productRequestDto)
+        {
+            try
+            {
+                var createdProduct = await _productService.CreateProduct2Async(productRequestDto);
+                return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id }, createdProduct);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, ProductRequestDto productRequestDto)

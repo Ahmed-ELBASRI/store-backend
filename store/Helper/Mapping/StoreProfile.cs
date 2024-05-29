@@ -14,6 +14,8 @@ namespace store.Helper.Mapping
             CreateMap<ProductRequestDto, Product>();
             CreateMap<Product, ProductResponseDto>();
 
+            CreateMap<produitRequestDto, Product>();
+
             CreateMap<ClientRequestdto, Client>();
             CreateMap<Client, ClientResponsedto>();
 

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Services.Contract;
 using store.Services.Implementation;
 using store.Settings;
@@ -16,12 +17,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IDbHelper, db>();
+
 // Chaine De Conx 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(connectionString));
 // This is just to build the DbContextOptions
 //builder.Services.AddDbContext<StoreDbContext>(options =>
 //    options.UseSqlServer("Initial connection string"));
+
+//builder.Services.AddDbContext<StoreDbContext>(options => { });
+
 
 // Auto Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

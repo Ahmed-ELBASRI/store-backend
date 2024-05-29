@@ -6,10 +6,22 @@ namespace store.Helper.Data
     public class StoreDbContext : DbContext
     {
         internal object panier;
+        private readonly string _connectionString;
 
-        public StoreDbContext(DbContextOptions<StoreDbContext> options)
+        public StoreDbContext(DbContextOptions<StoreDbContext> options) : base(options) { }
+
+
+        public StoreDbContext(DbContextOptions<StoreDbContext> options  , string connectionString)
         : base(options)
         {
+            _connectionString = connectionString;
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!string.IsNullOrEmpty(_connectionString))
+            {
+                optionsBuilder.UseSqlServer(_connectionString);
+            }
         }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Retour> Retours { get; set; }

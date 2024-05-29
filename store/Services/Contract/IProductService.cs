@@ -9,6 +9,8 @@ namespace store.Services.Contract
         Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync();
         Task<ProductResponseDto> GetProductByIdAsync(int id);
         Task<ProductResponseDto> CreateProductAsync(ProductRequestDto productRequestDto);
+        Task<ProductResponseDto> CreateProduct2Async(produitRequestDto productRequestDto);
+
         Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto);
         Task DeleteProductAsync(int id);
     }
