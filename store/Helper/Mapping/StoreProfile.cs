@@ -18,6 +18,7 @@ namespace store.Helper.Mapping
 
             CreateMap<ClientRequestdto, Client>();
             CreateMap<Client, ClientResponsedto>();
+            CreateMap<ClientRequestLoginDto, Client>();
 
             CreateMap<Retour, RetourResponsedto>();
             CreateMap<RetourRequestdto, Retour>();

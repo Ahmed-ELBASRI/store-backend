@@ -1,20 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
+using Stripe;
 
 namespace store.Services.Implementation
 {
     public class ClientService : IClientservice
     {
         private readonly StoreDbContext _context;
+        private readonly IDbHelper db;
 
 
 
-        public ClientService(StoreDbContext context)
+        public ClientService(StoreDbContext context,IDbHelper db)
         {
             _context = context;
+            this.db = db;
+        }
+
+        public async Task<Client> VerfiyLogin(Client cl,string ConnectionString)
+        {
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(ConnectionString);
+            var client = await dbContext.Clients.FirstOrDefaultAsync(v=> v.Email.Equals(cl.Email) && v.Password.Equals(cl.Password));
+            return client;
         }
 
         public async Task AddClient(Client Client)
