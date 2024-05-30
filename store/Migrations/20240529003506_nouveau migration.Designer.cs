@@ -12,8 +12,13 @@ using store.Helper.Data;
 namespace store.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
+<<<<<<<< HEAD:store/Migrations/20240529003506_nouveau migration.Designer.cs
     [Migration("20240529003506_nouveau migration")]
     partial class nouveaumigration
+========
+    [Migration("20240528113459_initial")]
+    partial class initial
+>>>>>>>> 0ab44cc69cd648237e33617e3d0db9bcb6940a64:store/Migrations/20240528113459_initial.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

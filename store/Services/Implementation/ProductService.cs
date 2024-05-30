@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
 
@@ -13,10 +14,12 @@ namespace store.Services.Implementation
     public class ProductService : IProductService
     {
         private readonly StoreDbContext _context;
+        private readonly IDbHelper dbHelper;
 
-        public ProductService(StoreDbContext context)
+        public ProductService(StoreDbContext context , IDbHelper helper)
         {
             _context = context;
+            this.dbHelper= helper;
         }
 
         public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()
@@ -46,6 +49,20 @@ namespace store.Services.Implementation
             };
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
+            return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix };
+        }
+        public async Task<ProductResponseDto> CreateProduct2Async(produitRequestDto productRequestDto)
+        {
+            var product = new Product
+            {
+                Name = productRequestDto.Name,
+                Description = productRequestDto.Description,
+                QteStock = productRequestDto.QteStock,
+                Prix = productRequestDto.Prix
+            };
+            StoreDbContext db = await this.dbHelper.GetUserDbContextAsync(productRequestDto.chaineConnection);
+            db.Products.Add(product);
+            await db.SaveChangesAsync();
             return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix };
         }
 
