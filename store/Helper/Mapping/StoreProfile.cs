@@ -35,6 +35,8 @@ namespace store.Helper.Mapping
             CreateMap<LignePanierRequestDto, LignePanier>();
             CreateMap<LignePanier, LignePanierResponseDto>();
 
+            CreateMap<LigneCommande, LigneCommandeResponse2Dto>();
+
             CreateMap<PanierRequestDto, Panier>();
             CreateMap<Panier, PanierResponseDto>();
 

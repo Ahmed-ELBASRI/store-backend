@@ -12,6 +12,7 @@ namespace store.Dtos.Responce
         public string Etat { get; set; }
         public double Total { get; set; }
         public int ClientId { get; set; }
+        [JsonIgnore]
         public IList<LigneCommande>? LCs { get; set; }
     }
 }

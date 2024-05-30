@@ -12,8 +12,8 @@ using store.Helper.Data;
 namespace store.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20240510220819_FirstDB")]
-    partial class FirstDB
+    [Migration("20240529003506_nouveau migration")]
+    partial class nouveaumigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -232,11 +232,13 @@ namespace store.Migrations
                     b.Property<DateTime>("DatePaimenet")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Montant")
+                    b.Property<double?>("Montant")
                         .HasColumnType("float");
 
+                    b.Property<string>("PaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("modePaiement")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdPaiement");
@@ -318,10 +320,16 @@ namespace store.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("Prix")
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Prix")
                         .HasColumnType("float");
 
-                    b.Property<int>("QteStock")
+                    b.Property<int?>("QteStock")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -364,7 +372,6 @@ namespace store.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Commentaire")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateRetour")
@@ -374,7 +381,6 @@ namespace store.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TypeRetour")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -628,8 +634,7 @@ namespace store.Migrations
                 {
                     b.Navigation("Favorits");
 
-                    b.Navigation("Panier")
-                        .IsRequired();
+                    b.Navigation("Panier");
 
                     b.Navigation("Reviews");
                 });
@@ -669,8 +674,7 @@ namespace store.Migrations
 
                     b.Navigation("LCs");
 
-                    b.Navigation("LignesPanier")
-                        .IsRequired();
+                    b.Navigation("LignesPanier");
 
                     b.Navigation("PVs");
 

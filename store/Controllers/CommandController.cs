@@ -29,12 +29,12 @@ namespace store.Controllers
             {
                  var commands = await _commandService.GetAllCommand();
                 var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
-                var options = new JsonSerializerOptions
-                {
-                    ReferenceHandler = ReferenceHandler.Preserve
-                };
-                var json = JsonSerializer.Serialize(commandDtos, options);
-                return Ok(json);
+                //var options = new JsonSerializerOptions
+                //{
+                 //   ReferenceHandler = ReferenceHandler.Preserve
+                //};
+                //var json = JsonSerializer.Serialize(commandDtos, options);
+                return Ok(commandDtos);
             }
             catch (Exception ex)
             {
@@ -45,10 +45,10 @@ namespace store.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CommandResponseDto>> GetCommand(int id)
         {
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.Preserve
-            };
+            //var options = new JsonSerializerOptions
+            //{
+              //  ReferenceHandler = ReferenceHandler.Preserve
+            //};
             var command = await _commandService.GetCommandById(id);
             if (command == null)
             {
@@ -56,8 +56,8 @@ namespace store.Controllers
             }
 
             var commandDto = _mapper.Map<CommandResponseDto>(command);
-            var json = JsonSerializer.Serialize(commandDto, options);
-            return Ok(json);
+            //var json = JsonSerializer.Serialize(commandDto, options);
+            return Ok(commandDto);
         }
         [HttpPost]
         public async Task<IActionResult> CreateCommand(CommandRequestDto requestDto)
@@ -97,6 +97,20 @@ namespace store.Controllers
                 }
 
                 return NoContent();
+        }
+        [HttpGet("client/{clientId}")]
+        public async Task<ActionResult<IEnumerable<CommandResponseDto>>> GetCommandsByClient(int clientId)
+        {
+            try
+            {
+                var commands = await _commandService.GetCommandsByClient(clientId);
+                var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
+                return Ok(commandDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving commands for client");
+            }
         }
         [HttpGet("{id}/total")]
         public async Task<ActionResult<double>> GetCommandTotal(int id)
