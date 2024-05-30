@@ -33,7 +33,7 @@ namespace store.Services.Implementation
 
         public async Task<IEnumerable<Att_Produit>> GetAllAtt_Produit()
         {
-            return await _context.att_produits.ToListAsync();
+            return await _context.att_produits.Include(p => p.Produit).ToListAsync();
         }
 
         public async Task<Att_Produit> GetAtt_Produit(int id)

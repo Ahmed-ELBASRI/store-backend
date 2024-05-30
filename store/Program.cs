@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using store.Helper.Data;
@@ -9,6 +11,7 @@ using store.Services.Contract;
 using store.Services.Implementation;
 using store.Settings;
 using Stripe;
+using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,6 +80,14 @@ builder.Services.AddScoped<ICommandService, CommandService>();
 builder.Services.AddScoped<ILigneCommandeService, LigneCommandeService>();
 builder.Services.AddScoped<IAtt_ProduitService, Att_ProduitService>();
 builder.Services.AddScoped<IPhotoProduitService, PhotoProduitService>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IHostingEnvironment, HostingEnvironment>();
+
+
+
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -98,6 +109,7 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

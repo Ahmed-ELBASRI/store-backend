@@ -11,6 +11,7 @@ namespace store.Services.Contract
         Task<PhotoProduitResponseDto> UploadPhotoAsync(int productId, string filePath);
         Task UpdatePhotoUrlAsync(int id, PhotoProduit produit);
         Task DeletePhotoProduitAsync(int id);
+        Task<string> UploadFileAsync(IFormFile file);
     }
     
 }
