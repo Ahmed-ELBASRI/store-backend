@@ -1,4 +1,5 @@
 ﻿using store.Services.Contract;
+using System.Text.Json;
 
 namespace store.Services.Implementation
 {
@@ -15,6 +16,7 @@ namespace store.Services.Implementation
         {
             var response = await _httpClient.GetStringAsync(endpoint);
             return response;
+
         }
     }
 }

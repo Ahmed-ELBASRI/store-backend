@@ -7,6 +7,7 @@ using store.Helper.Jwt;
 using store.Models;
 using store.Services.Contract;
 using store.Services.Implementation;
+using System.Text.Json;
 
 
 namespace store.Controllers
@@ -34,8 +35,10 @@ namespace store.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> login(ClientRequestLoginDto requestDto)
         {
+            string connectionString = $"Data Source=.\\SQLEXPRESS;Initial Catalog={requestDto.ConnectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+
             var client = _mapper.Map<Client>(requestDto);
-            var clientVerif = await this._clientService.VerfiyLogin(client,requestDto.ConnectionString);
+            var clientVerif = await this._clientService.VerfiyLogin(client,connectionString);
             if (clientVerif == null)
             {
                 return NotFound();
@@ -48,8 +51,10 @@ namespace store.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(ClientRequestRegisterDto ClientRequest)
         {
+            string connectionString = $"Data Source=.\\SQLEXPRESS;Initial Catalog={ClientRequest.ConnectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+
             var client = _mapper.Map<Client>(ClientRequest);
-            await _clientService.RegisterClient(client,ClientRequest.ConnectionString);
+            await _clientService.RegisterClient(client,connectionString);
             return Ok();
         }
 
@@ -153,8 +158,17 @@ namespace store.Controllers
         public async Task<IActionResult> GetData(int id)
         {
             var endpoint = $"https://localhost:7100/api/Store/{id}"; // Replace with your API endpoint
-            var data = await _myApiService.GetApiResponseAsync(endpoint);
-            return Ok(data);
+
+            try
+            {
+                var data = await _myApiService.GetApiResponseAsync(endpoint);
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
 
 
