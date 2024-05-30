@@ -18,14 +18,17 @@ namespace store.Controllers
         private readonly IClientservice _clientService;
         private readonly IMapper _mapper;
         private readonly JwtHelper _jwtHelper;
-       // private readonly IProduitService _produitService;
+        private readonly IMyApiService _myApiService;
 
-        public ClientController(IClientservice clientService, IMapper mapper , JwtHelper jwtHelper)
+        // private readonly IProduitService _produitService;
+
+        public ClientController(IClientservice clientService, IMapper mapper , JwtHelper jwtHelper, IMyApiService myApiService)
         {
             _clientService = clientService;
             _mapper = mapper;
             this._jwtHelper = jwtHelper;
-           /// _produitService = produitService;
+            _myApiService = myApiService;
+            /// _produitService = produitService;
         }
 
         [HttpPost("login")]
@@ -145,5 +148,15 @@ namespace store.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating Client");
             }
         }
+
+        [HttpGet("store/{id}")]
+        public async Task<IActionResult> GetData(int id)
+        {
+            var endpoint = $"https://localhost:7100/api/Store/{id}"; // Replace with your API endpoint
+            var data = await _myApiService.GetApiResponseAsync(endpoint);
+            return Ok(data);
+        }
+
+
     }
 }

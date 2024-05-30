@@ -21,6 +21,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<IMyApiService, MyApiService>();
+
 
 
 //Jwt configuration starts here
@@ -56,6 +58,10 @@ builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(co
 
 // Auto Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//add http client
+builder.Services.AddHttpClient();
+
 
 // Register Service
 builder.Services.AddScoped<IProductService, store.Services.Implementation.ProductService>();
