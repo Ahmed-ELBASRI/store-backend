@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace store.Migrations
 {
-    public partial class FirstDB : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -33,8 +33,10 @@ namespace store.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    QteStock = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<double>(type: "float", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QteStock = table.Column<int>(type: "int", nullable: true),
+                    Prix = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,7 +62,7 @@ namespace store.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,7 +81,7 @@ namespace store.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,7 +102,7 @@ namespace store.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,13 +122,13 @@ namespace store.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Favorits_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -146,7 +148,7 @@ namespace store.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -167,7 +169,7 @@ namespace store.Migrations
                         column: x => x.ProduitId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,8 +179,9 @@ namespace store.Migrations
                     IdPaiement = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DatePaimenet = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Montant = table.Column<double>(type: "float", nullable: false),
-                    modePaiement = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Montant = table.Column<double>(type: "float", nullable: true),
+                    modePaiement = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CommandeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -189,7 +192,7 @@ namespace store.Migrations
                         column: x => x.CommandeId,
                         principalTable: "Commands",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,7 +213,7 @@ namespace store.Migrations
                         column: x => x.CommandeId,
                         principalTable: "Commands",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,7 +234,7 @@ namespace store.Migrations
                         column: x => x.VarianteId,
                         principalTable: "Variante",
                         principalColumn: "IdVariante",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,13 +256,13 @@ namespace store.Migrations
                         column: x => x.CommandeId,
                         principalTable: "Commands",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ligneCommandes_Variante_VarianteId",
                         column: x => x.VarianteId,
                         principalTable: "Variante",
                         principalColumn: "IdVariante",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -280,13 +283,13 @@ namespace store.Migrations
                         column: x => x.PanierId,
                         principalTable: "paniers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LignePanier_Variante_VarianteId",
                         column: x => x.VarianteId,
                         principalTable: "Variante",
                         principalColumn: "IdVariante",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -306,7 +309,7 @@ namespace store.Migrations
                         column: x => x.VarianteId,
                         principalTable: "Variante",
                         principalColumn: "IdVariante",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -328,13 +331,13 @@ namespace store.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_reviews_Variante_VarianteId",
                         column: x => x.VarianteId,
                         principalTable: "Variante",
                         principalColumn: "IdVariante",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -344,8 +347,8 @@ namespace store.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateRetour = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TypeRetour = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Commentaire = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TypeRetour = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Commentaire = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LigneCommandeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -356,7 +359,7 @@ namespace store.Migrations
                         column: x => x.LigneCommandeId,
                         principalTable: "ligneCommandes",
                         principalColumn: "IdLigneCommande",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
