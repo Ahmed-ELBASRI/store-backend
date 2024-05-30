@@ -233,11 +233,8 @@ namespace store.Migrations
                     b.Property<double?>("Montant")
                         .HasColumnType("float");
 
-
                     b.Property<string>("PaymentIntentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
 
                     b.Property<string>("modePaiement")
                         .HasColumnType("nvarchar(max)");

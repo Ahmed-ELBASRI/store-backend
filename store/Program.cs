@@ -1,13 +1,18 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using store.Helper.Data;
+using store.Helper.Db;
+using store.Helper.Jwt;
 using store.Services.Contract;
 using store.Services.Implementation;
 using store.Settings;
 using Stripe;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +23,31 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<IMyApiService, MyApiService>();
+
+
+
+//Jwt configuration starts here
+var jwtIssuer = builder.Configuration.GetSection("Jwt:Issuer").Get<string>();
+var jwtKey = builder.Configuration.GetSection("Jwt:Key").Get<string>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+ .AddJwtBearer(options =>
+ {
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         ValidateIssuer = true,
+         ValidateAudience = true,
+         ValidateLifetime = true,
+         ValidateIssuerSigningKey = true,
+         ValidIssuer = jwtIssuer,
+         ValidAudience = jwtIssuer,
+         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+     };
+ });
+
+builder.Services.AddScoped<IDbHelper, db>();
 
 // Chaine De Conx 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -26,8 +56,15 @@ builder.Services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(co
 //builder.Services.AddDbContext<StoreDbContext>(options =>
 //    options.UseSqlServer("Initial connection string"));
 
+//builder.Services.AddDbContext<StoreDbContext>(options => { });
+
+
 // Auto Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//add http client
+builder.Services.AddHttpClient();
+
 
 // Register Service
 builder.Services.AddScoped<IProductService, store.Services.Implementation.ProductService>();

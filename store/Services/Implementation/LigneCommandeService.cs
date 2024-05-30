@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using store.Dtos.Responce;
 using store.Helper.Data;
 using store.Models;
 using store.Services.Contract;
@@ -13,6 +14,43 @@ namespace store.Services.Implementation
         {
             _context = context;
         }
+        public async Task<IEnumerable<LigneCommande>> GetLignesByCommandeId(int commandeId)
+        {
+            return await _context.ligneCommandes.Where(lc => lc.CommandeId == commandeId).ToListAsync();
+        }
+        public async Task<IEnumerable<LigneCommande>> GetLignessByCommandeId(int commandeId)
+        {
+            //return await _context.ligneCommandes.Where(lc => lc.CommandeId == commandeId).ToListAsync();
+            var result = await _context.ligneCommandes
+            .Where(lc => lc.CommandeId == commandeId)
+            .Include(lc => lc.Variante) // Inclure la variante associée
+            .ThenInclude(v => v.PVs) // Inclure les photos de la variante
+            .Select(lc => new LigneCommandeResponseDto
+            {
+            IdLigneCommande = lc.IdLigneCommande,
+            Quantite = lc.Quantite,
+            ProduitUnitaire = lc.ProduitUnitaire,
+            UrlImage = lc.Variante.PVs.FirstOrDefault().UrlImage // Prendre la première image (ou ajuster selon les besoins)
+            })
+        .ToListAsync();
+
+            return (IEnumerable<LigneCommande>)result;
+        }
+        //public async Task<IEnumerable<LigneCommande>> GetLignessByCommandeId(int commandeId)
+        //{
+        //    return await _context.ligneCommandes.Where(lc => lc.CommandeId == commandeId).ToListAsync();
+
+        //    var result = await _context.ligneCommandes
+        //    .Where(lg => lg.CommandeId == commandeId)
+        //    .Select(lg => new LigneCommande
+        //    {
+        //        IdLigneCommande = lg.IdLigneCommande,
+        //        Quantite = lg.Quantite,
+        //        ProduitUnitaire = lg.ProduitUnitaire,
+        //        UrlImage = lg.(pv => pv.UrlImage).FirstOrDefault()
+        //    })
+        //    .ToListAsync();
+        //}
         public async Task<IEnumerable<LigneCommande>> GetAllLigneCommandes()
         {
                 return await _context.ligneCommandes

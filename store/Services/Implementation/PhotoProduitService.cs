@@ -101,6 +101,7 @@ namespace store.Services.Implementation
         {
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
             var newFileName = Path.GetRandomFileName() + extension;
+            //! A Modifier Change Directory Of The Project To C:Location 
             string folderPath = @"C:\Users\Mohamed\Desktop\dashbord2\dashboard-angular\src\assets\uploads\";
 
             
