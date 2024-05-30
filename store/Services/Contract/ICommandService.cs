@@ -10,6 +10,8 @@ namespace store.Services.Contract
         Task DeleteCommand(int id);
         Task<bool> AnnulerCommande(int commandeId);
         Task<double> CalculerTotalCommande(int commandeId);
+
+        Task<IEnumerable<Command>> GetCommandsByClient(int clientId);
     }
     
 }

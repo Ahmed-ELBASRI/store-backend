@@ -27,7 +27,10 @@ namespace store.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-
+        public async Task<IEnumerable<Command>> GetCommandsByClient(int clientId)
+        {
+            return await _context.Commands.Where(c => c.ClientId == clientId).ToListAsync();
+        }
         public async Task<IEnumerable<Command>> GetAllCommand()
         {
             return await _context.Commands

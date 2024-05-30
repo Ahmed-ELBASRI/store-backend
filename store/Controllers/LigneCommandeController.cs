@@ -41,6 +41,35 @@ namespace store.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving Lignecommande");
             }
         }
+        [HttpGet("commande/{commandeId}")]
+        public async Task<ActionResult<IEnumerable<LigneCommandeResponse2Dto>>> GetLignesByCommandeId(int commandeId)
+        {
+            try
+            {
+                var lignes = await _lignecommandService.GetLignesByCommandeId(commandeId);
+                var ligneDtos = _mapper.Map<IEnumerable<LigneCommandeResponse2Dto>>(lignes);
+                return Ok(ligneDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving ligne commandes");
+            }
+        }
+        //[HttpGet("commandes/{commandeId}")]
+        //public async Task<ActionResult<IEnumerable<LigneCommandeResponse2Dto>>> GetLignessByCommandeId(int commandeId)
+        //{
+            //try
+            //{
+                //var lignes = await _lignecommandService.GetLignesByCommandeId(commandeId);
+                //var ligneDtos = _mapper.Map<IEnumerable<LigneCommandeResponse2Dto>>(lignes);
+                //return Ok(ligneDtos);
+            //}
+            //catch (Exception ex)
+            //{
+                //return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving ligne commandes");
+            //}
+        //}
+
         [HttpGet("{id}")]
         public async Task<ActionResult<LigneCommandeResponseDto>> GetLigneCommandeById(int id)
         {

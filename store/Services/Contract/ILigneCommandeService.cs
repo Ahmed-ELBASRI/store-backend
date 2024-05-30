@@ -9,5 +9,6 @@ namespace store.Services.Contract
         Task AddLigneCommande(LigneCommande ligneCommande);
         Task UpdateLigneCommande(int id, LigneCommande newLigneCommande);
         Task DeleteLigneCommande(int id);
+        Task<IEnumerable<LigneCommande>> GetLignesByCommandeId(int commandeId);
     }
 }
