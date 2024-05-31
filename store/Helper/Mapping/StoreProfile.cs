@@ -11,8 +11,8 @@ namespace store.Helper.Mapping
     {
         public StoreProfile()
         {
-            CreateMap<ProductRequestDto, Product>();
-            CreateMap<Product, ProductResponseDto>();
+            //CreateMap<ProductRequestDto, Product>();
+            //CreateMap<Product, ProductResponseDto>();
 
             CreateMap<produitRequestDto, Product>();
 
@@ -50,8 +50,8 @@ namespace store.Helper.Mapping
             CreateMap<LigneCommandeRequestDto, LigneCommande>();
             CreateMap<LigneCommande, LigneCommandeResponseDto>();
 
-            CreateMap<ProductRequestDto, Product>();
-            CreateMap<Product, ProductRequestDto>();
+            //CreateMap<ProductRequestDto, Product>();
+            //CreateMap<Product, ProductRequestDto>();
 
             CreateMap<Att_ProduitRequestDto, Att_Produit>();
             CreateMap<Att_Produit, Att_ProduitResponseDto>();
@@ -59,24 +59,28 @@ namespace store.Helper.Mapping
             CreateMap<PhotoProduitRequestDto, PhotoProduit>();
             CreateMap<PhotoProduit, PhotoProduitResponseDto>();
 
-            //CreateMap<ProductRequestDto, Product>()
-            //.ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            //.ForMember(dest => dest.QteStock, opt => opt.MapFrom(src => src.QteStock))
-            //.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+            CreateMap<ProductRequestDto, Product>()
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.QteStock, opt => opt.MapFrom(src => src.QteStock));
+                //.ForMember(dest => dest.PPs, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Image)
+                //    ? new List<PhotoProduit>()
+                //    : new List<PhotoProduit> { new PhotoProduit { UrlImage = src.Image } }));
+
+            CreateMap<Product, ProductResponseDto>()
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.PPs.FirstOrDefault() != null ? src.PPs.FirstOrDefault().UrlImage : string.Empty))
+                .ForMember(dest => dest.QteStock, opt => opt.MapFrom(src => src.QteStock));
 
 
-            //CreateMap<Product, ProductResponseDto>()
-            //    .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-            //    .ForMember(dest => dest.QteStock, opt => opt.MapFrom(src => src.QteStock))
-            //    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
 
-            //CreateMap<Att_ProduitRequestDto, Att_Produit>()
-            //  .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Produit))
-            //  .ForMember(dest => dest.Produit, opt => opt.Ignore());
+            CreateMap<Att_ProduitRequestDto, Att_Produit>();
 
-            //CreateMap<Att_Produit, Att_ProduitResponseDto>()
-            //    .ForMember(dest => dest.Produit, opt => opt.MapFrom(src => src.ProductId));
+
+            CreateMap<Att_Produit, Att_ProduitResponseDto>()
+               .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Produit.Name));
+
+               //.ForMember(dest => dest.Produit, opt => opt.Ignore());
 
         }
     }

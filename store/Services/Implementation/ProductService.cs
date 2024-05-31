@@ -16,10 +16,10 @@ namespace store.Services.Implementation
         private readonly StoreDbContext _context;
         private readonly IDbHelper dbHelper;
 
-        public ProductService(StoreDbContext context , IDbHelper helper)
+        public ProductService(StoreDbContext context, IDbHelper helper)
         {
             _context = context;
-            this.dbHelper= helper;
+            this.dbHelper = helper;
         }
 
         public async Task<IEnumerable<ProductResponseDto>> GetAllProductsAsync()
@@ -68,17 +68,48 @@ namespace store.Services.Implementation
 
         public async Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(p => p.PPs).FirstOrDefaultAsync(p => p.Id == id);
             if (product == null)
             {
                 throw new NotFoundException($"Product with ID {id} not found.");
             }
+
             product.Name = productRequestDto.Name;
             product.Description = productRequestDto.Description;
             product.QteStock = productRequestDto.QteStock;
             product.Prix = productRequestDto.Prix;
+
+            if (productRequestDto.File != null)
+            {
+                var photoUrl = await _photoProduitService.UploadFileAsync(productRequestDto.File);
+
+                if (product.PPs != null && product.PPs.Any())
+                {
+                    product.PPs[0].UrlImage = photoUrl;
+                    _context.Entry(product.PPs[0]).State = EntityState.Modified;
+                }
+                else
+                {
+                    product.PPs = new List<PhotoProduit>
+            {
+                new PhotoProduit { UrlImage = photoUrl }
+            };
+                    _context.Entry(product.PPs[0]).State = EntityState.Added;
+                }
+            }
+
+            _context.Entry(product).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix };
+
+            return new ProductResponseDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                QteStock = product.QteStock,
+                Prix = product.Prix,
+                Image = product.PPs?.FirstOrDefault()?.UrlImage
+            };
         }
 
         public async Task DeleteProductAsync(int id)
@@ -88,7 +119,20 @@ namespace store.Services.Implementation
             {
                 throw new NotFoundException($"Product with ID {id} not found.");
             }
+
+            var relatedVariantes = _context.att_variantes.Where(v => v.VarianteId == id);
+            _context.att_variantes.RemoveRange(relatedVariantes);
+
+            var relatedPhotoProduits = _context.photoProduits.Where(pp => pp.ProductId == id);
+            _context.photoProduits.RemoveRange(relatedPhotoProduits);
+
+            var relatedFavorits = _context.Favorits.Where(f => f.ProductId == id);
+            _context.Favorits.RemoveRange(relatedFavorits);
+
             _context.Products.Remove(product);
+
+
+
             await _context.SaveChangesAsync();
         }
     }

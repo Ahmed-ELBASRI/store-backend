@@ -56,7 +56,7 @@ namespace store.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductResponseDto>> CreateProduct(ProductRequestDto productRequestDto)
+        public async Task<ActionResult<ProductResponseDto>> CreateProduct([FromForm]ProductRequestDto productRequestDto)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace store.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, ProductRequestDto productRequestDto)
+        public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, [FromForm] ProductRequestDto productRequestDto)
         {
             try
             {
