@@ -4,7 +4,7 @@ namespace store.Services.Contract
 {
     public interface ICommandService
     {
-        Task<IEnumerable<Command>> GetAllCommand();
+        Task<IEnumerable<Command>> GetAllCommand(string ConnectinString);
         Task<Command?> GetCommandById(int id);
         Task AddCommand(Command Command);
         Task DeleteCommand(int id);

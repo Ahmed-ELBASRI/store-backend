@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
 
@@ -8,10 +9,12 @@ namespace store.Services.Implementation
     public class CommandService : ICommandService
     {
         private readonly StoreDbContext _context;
+        private readonly IDbHelper db;
 
-        public CommandService(StoreDbContext context)
+        public CommandService(StoreDbContext context , IDbHelper db)
         {
             _context = context;
+            this.db = db;
         }
 
         public async Task AddCommand(Command Command)
@@ -31,9 +34,11 @@ namespace store.Services.Implementation
         {
             return await _context.Commands.Where(c => c.ClientId == clientId).ToListAsync();
         }
-        public async Task<IEnumerable<Command>> GetAllCommand()
+        public async Task<IEnumerable<Command>> GetAllCommand(string ConnectinString)
         {
-            return await _context.Commands
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(ConnectinString);
+
+            return await dbContext.Commands
                 .Include(cl => cl.Client)
                 .Include(c => c.LCs)
                 .Include(lc => lc.Recs) 
