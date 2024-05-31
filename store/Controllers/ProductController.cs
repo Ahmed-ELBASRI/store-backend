@@ -7,6 +7,7 @@ using store.Dtos.Responce;
 using store.Models;
 using store.Services.Contract;
 using store.Services.Implementation;
+using System.Text.Json;
 
 namespace store.Controllers
 {
@@ -118,14 +119,21 @@ namespace store.Controllers
             }
         }
 
-        [HttpGet("Product/variante/{varianteId}")]
-        public async Task<IActionResult> GetProductByVarianteId(int varianteId)
+        [HttpPost("Product/variante/{varianteId}")]
+        public async Task<IActionResult> GetProductByVarianteId(int varianteId,[FromBody] JsonElement data)
         {
             try
             {
-                var product = await _productService.GetProductByVarianteIdAsync(varianteId);
-                var productResponseDto = _mapper.Map<ProductResponseDto>(product);
-                return Ok(productResponseDto);
+                if (data.TryGetProperty("ConnectionString", out JsonElement connectionStringElement))
+                {
+                    string connectionString = connectionStringElement.GetString();
+                    var connectionString2 = $"Data Source=.\\SQLEXPRESS;Initial Catalog={connectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+                    var product = await _productService.GetProductByVarianteIdAsync(varianteId,connectionString2);
+                    var productResponseDto = _mapper.Map<ProductResponseDto>(product);
+                    return Ok(productResponseDto);
+                }
+                return BadRequest();
+               
             }
             catch (NotFoundException ex)
             {

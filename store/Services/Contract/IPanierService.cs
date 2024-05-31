@@ -6,11 +6,11 @@ namespace store.Services.Contract
 {
     public interface IPanierService
     {
-        Task<Panier> GetPanier(int id);
+        Task<Panier> GetPanier(int id,string connectionString);
         Task<IEnumerable<Panier>> GetAllPaniers();
         Task<Panier> AddPanier(Panier panier);
         Task UpdatePanier(int id, Panier panier);
         Task DeletePanier(int id);
-        Task<Panier> GetPanierByClientId(int clientId);
+        Task<Panier> GetPanierByClientId(int clientId,string ConnectionString);
     }
 }

@@ -12,7 +12,7 @@ namespace store.Services.Contract
         Task<ProductResponseDto> CreateProduct2Async(produitRequestDto productRequestDto);
 
         //Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto);
-        Task<Product> GetProductByVarianteIdAsync(int varianteId);
+        Task<Product> GetProductByVarianteIdAsync(int varianteId,string connectionString);
         Task DeleteProductAsync(int id);
     }
 }

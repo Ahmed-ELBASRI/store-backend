@@ -11,6 +11,8 @@ using store.Services.Contract;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Text.Json;
+using store.Services.Implementation;
 
 namespace store.Controllers
 {
@@ -28,18 +30,26 @@ namespace store.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PanierResponseDto>> GetPanier(int id)
+        [HttpPost("{id}")]
+        public async Task<ActionResult<PanierResponseDto>> GetPanier(int id, [FromBody] JsonElement data)
         {
             try
             {
-                var panier = await _panierService.GetPanier(id);
-                if (panier == null)
+
+                if (data.TryGetProperty("ConnectionString", out JsonElement connectionStringElement))
                 {
-                    return NotFound();
+                    string connectionString = connectionStringElement.GetString();
+                    var connectionString2 = $"Data Source=.\\SQLEXPRESS;Initial Catalog={connectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+                    var panier = await _panierService.GetPanier(id,connectionString2);
+                    if (panier == null)
+                    {
+                        return NotFound();
+                    }
+                    var panierDto = _mapper.Map<PanierResponseDto>(panier);
+                    return Ok(panierDto);
                 }
-                var panierDto = _mapper.Map<PanierResponseDto>(panier);
-                return Ok(panierDto);
+                return BadRequest();
+               
             }
             catch (Exception ex)
             {
@@ -61,23 +71,39 @@ namespace store.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("client/{clientId}")]
-        public async Task<ActionResult<PanierResponseDto>> GetPanierByClientId(int clientId)
+        [HttpPost("client/{clientId}")]
+        public async Task<ActionResult<PanierResponseDto>> GetPanierByClientId(int clientId, [FromBody] JsonElement data)
         {
             try
             {
-                var panier = await _panierService.GetPanierByClientId(clientId);
-                if (panier == null)
+               
+                if (data.TryGetProperty("ConnectionString", out JsonElement connectionStringElement))
                 {
-                    return NotFound();
+                    string connectionString = connectionStringElement.GetString();
+                    var connectionString2 = $"Data Source=.\\SQLEXPRESS;Initial Catalog={connectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+                    var panier = await _panierService.GetPanierByClientId(clientId,connectionString2);
+                    if (panier == null)
+                    {
+                        return NotFound();
+                    }
+                    var panierDto = _mapper.Map<PanierResponseDto>(panier);
+                    return Ok(panierDto);
+
+                   
+
+                 
                 }
-                var panierDto = _mapper.Map<PanierResponseDto>(panier);
-                return Ok(panierDto);
+                else
+                {
+                    return BadRequest(new { message = "ConnectionString property is missing" });
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving commands");
             }
+         
+            
         }
 
         [HttpPost]
@@ -95,34 +121,34 @@ namespace store.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePanier(int id, PanierRequestDto panierRequestDto)
-        {
-            try
-            {
-                var existingPanier = await _panierService.GetPanier(id);
-                if (existingPanier == null)
-                {
-                    return NotFound();
-                }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdatePanier(int id, PanierRequestDto panierRequestDto)
+        //{
+        //    try
+        //    {
+        //        var existingPanier = await _panierService.GetPanier(id);
+        //        if (existingPanier == null)
+        //        {
+        //            return NotFound();
+        //        }
 
-                var panier = _mapper.Map(panierRequestDto, existingPanier);
-                await _panierService.UpdatePanier(id, panier);
-                return NoContent();
-            }
-            catch (ArgumentException)
-            {
-                return BadRequest("ID mismatch");
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound("Panier not found");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //        var panier = _mapper.Map(panierRequestDto, existingPanier);
+        //        await _panierService.UpdatePanier(id, panier);
+        //        return NoContent();
+        //    }
+        //    catch (ArgumentException)
+        //    {
+        //        return BadRequest("ID mismatch");
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        return NotFound("Panier not found");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePanier(int id)

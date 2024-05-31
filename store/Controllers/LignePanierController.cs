@@ -6,6 +6,7 @@ using store.Dtos.Request;
 using store.Dtos.Responce;
 using store.Models;
 using store.Services.Contract;
+using System.Text.Json;
 
 namespace store.Controllers
 {
@@ -109,21 +110,28 @@ namespace store.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("lignespanier/panier/{panierId}")]
-        public async Task<ActionResult<List<LignePanierResponseDto>>> GetLignesPanierByPanierId(int panierId)
+        [HttpPost("lignespanier/panier/{panierId}")]
+        public async Task<ActionResult<List<LignePanierResponseDto>>> GetLignesPanierByPanierId(int panierId,[FromBody] JsonElement data)
         {
             try
             {
-                var lignesPanier = await _lignePanierService.GetLignesPanierByPanierId(panierId);
-
-                if (lignesPanier == null)
+                if (data.TryGetProperty("ConnectionString", out JsonElement connectionStringElement))
                 {
-                    return NotFound();
+                    string connectionString = connectionStringElement.GetString();
+                    var connectionString2 = $"Data Source=.\\SQLEXPRESS;Initial Catalog={connectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+                    var lignesPanier = await _lignePanierService.GetLignesPanierByPanierId(panierId, connectionString2);
+
+                    if (lignesPanier == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var lignesPanierDtoList = _mapper.Map<List<LignePanierResponseDto>>(lignesPanier);
+
+                    return Ok(lignesPanierDtoList);
                 }
-
-                var lignesPanierDtoList = _mapper.Map<List<LignePanierResponseDto>>(lignesPanier);
-
-                return Ok(lignesPanierDtoList);
+                return BadRequest();
+               
             }
             catch (Exception ex)
             {

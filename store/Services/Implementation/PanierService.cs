@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
 using System;
@@ -12,18 +13,22 @@ namespace store.Services.Implementation
     public class PanierService : IPanierService
     {
         private readonly StoreDbContext _context;
+        private readonly IDbHelper db;
 
-        public PanierService(StoreDbContext context)
+        public PanierService(StoreDbContext context,IDbHelper db)
         {
             _context = context;
+            this.db = db;
         }
-        public async Task<Panier> GetPanierByClientId(int clientId)
+        public async Task<Panier> GetPanierByClientId(int clientId,string connectionString)
         {
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(connectionString);
+
             if (clientId <= 0)
             {
                 throw new ArgumentException("Invalid client id value, id must be greater than 0");
             }
-            var panier = await _context.paniers
+            var panier = await dbContext.paniers
                                        .Include(p => p.LPs)
                                        .FirstOrDefaultAsync(p => p.ClientId == clientId);
 
@@ -34,14 +39,14 @@ namespace store.Services.Implementation
 
             return panier;
         }
-        public async Task<Panier> GetPanier(int id)
+        public async Task<Panier> GetPanier(int id,string connectionString)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("Invalid id value, id must be greater than 0");
             }
-
-            var panier = await _context.paniers.FindAsync(id);
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(connectionString);
+            var panier = await dbContext.paniers.FindAsync(id);
 
             if (panier == null)
             {

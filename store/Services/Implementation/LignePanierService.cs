@@ -1,22 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.DevTools.V122.Network;
 using store.Dtos.Responce;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
 
 namespace store.Services.Implementation
 {
     public class LignePanierService : ILignePanierService
+
     {
         private readonly StoreDbContext _context;
+        private readonly IDbHelper db;
 
-        public LignePanierService(StoreDbContext context)
+        public LignePanierService(StoreDbContext context,IDbHelper db)
         {
             _context = context;
+            this.db = db;
         }
-        public async Task<List<LignePanier>> GetLignesPanierByPanierId(int panierId)
+        public async Task<List<LignePanier>> GetLignesPanierByPanierId(int panierId, string ConnectionString)
         {
-            var lignesPanier = await _context.LignePanier
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(ConnectionString);
+
+            var lignesPanier = await dbContext.LignePanier
                                              .Where(lp => lp.PanierId == panierId)
                                              .ToListAsync();
 

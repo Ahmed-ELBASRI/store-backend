@@ -7,6 +7,7 @@ using store.Dtos.Responce;
 using store.Models;
 using store.Services.Contract;
 using store.Services.Implementation;
+using System.Text.Json;
 
 namespace store.Controllers
 {
@@ -23,14 +24,20 @@ namespace store.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{varianteId}")]
-        public async Task<ActionResult<IEnumerable<PhotoVarianteResponseDto>>> GetPhotosByVarianteId(int varianteId)
+        [HttpPost("{varianteId}")]
+        public async Task<ActionResult<IEnumerable<PhotoVarianteResponseDto>>> GetPhotosByVarianteId(int varianteId,[FromBody] JsonElement data)
         {
             try
             {
-                var photos = await _photoVarianteService.GetPhotosByVarianteIdAsync(varianteId);
-                var photoDtos = _mapper.Map<IEnumerable<PhotoVarianteResponseDto>>(photos);
-                return Ok(photoDtos);
+                if (data.TryGetProperty("ConnectionString", out JsonElement connectionStringElement))
+                {
+                    string connectionString = connectionStringElement.GetString();
+                    var connectionString2 = $"Data Source=.\\SQLEXPRESS;Initial Catalog={connectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+                    var photos = await _photoVarianteService.GetPhotosByVarianteIdAsync(varianteId,connectionString2);
+                    var photoDtos = _mapper.Map<IEnumerable<PhotoVarianteResponseDto>>(photos);
+                    return Ok(photoDtos);
+                }
+                return BadRequest();
             }
             catch (Exception ex)
             {
@@ -57,27 +64,27 @@ namespace store.Controllers
         }
 
 
-        [HttpPost("{varianteId}")]
-        public async Task<ActionResult<PhotoVarianteResponseDto>> UploadPhoto(int varianteId, [FromBody] PhotoVarianteRequestDto photoVarianteRequestDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                // If model state is invalid, return bad request with model state errors
-                return BadRequest(ModelState);
-            }
+        //[HttpPost("{varianteId}")]
+        //public async Task<ActionResult<PhotoVarianteResponseDto>> UploadPhoto(int varianteId, [FromBody] PhotoVarianteRequestDto photoVarianteRequestDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // If model state is invalid, return bad request with model state errors
+        //        return BadRequest(ModelState);
+        //    }
 
-            try
-            {
-                var photoVariante = _mapper.Map<PhotoVariante>(photoVarianteRequestDto);
-                var uploadedPhoto = await _photoVarianteService.UploadPhotoAsync(varianteId, photoVariante.UrlImage);
-                var uploadedPhotoDto = _mapper.Map<PhotoVarianteResponseDto>(uploadedPhoto);
-                return CreatedAtAction(nameof(GetPhotosByVarianteId), new { varianteId }, uploadedPhotoDto);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
-            }
-        }
+        //    try
+        //    {
+        //        var photoVariante = _mapper.Map<PhotoVariante>(photoVarianteRequestDto);
+        //        var uploadedPhoto = await _photoVarianteService.UploadPhotoAsync(varianteId, photoVariante.UrlImage);
+        //        var uploadedPhotoDto = _mapper.Map<PhotoVarianteResponseDto>(uploadedPhoto);
+        //        return CreatedAtAction(nameof(GetPhotosByVarianteId), new { varianteId }, uploadedPhotoDto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        //    }
+        //}
 
         [HttpDelete("{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)

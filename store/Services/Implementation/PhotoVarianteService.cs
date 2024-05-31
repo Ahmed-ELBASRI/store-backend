@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
+using OpenQA.Selenium.DevTools.V122.Network;
 using store.Helper.Data;
+using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
 
@@ -10,15 +12,19 @@ namespace store.Services.Implementation
     public class PhotoVarianteService : IPhotoVarianteService
     {
         private readonly StoreDbContext _context;
+        private readonly IDbHelper db;
 
-        public PhotoVarianteService(StoreDbContext context)
+        public PhotoVarianteService(StoreDbContext context,IDbHelper db)
         {
             _context = context;
+            this.db = db;
         }
 
-        public async Task<IEnumerable<PhotoVariante>> GetPhotosByVarianteIdAsync(int varianteId)
+        public async Task<IEnumerable<PhotoVariante>> GetPhotosByVarianteIdAsync(int varianteId,string connectionString)
         {
-            return await _context.photoVariantes
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(connectionString);
+
+            return await dbContext.photoVariantes
                 .Where(p => p.VarianteId == varianteId)
                 .ToListAsync();
         }

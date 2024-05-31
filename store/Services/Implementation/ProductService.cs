@@ -135,15 +135,16 @@ namespace store.Services.Implementation
 
             await _context.SaveChangesAsync();
         }
-        public async Task<Product> GetProductByVarianteIdAsync(int varianteId)
+        public async Task<Product> GetProductByVarianteIdAsync(int varianteId,string ConnectionString)
         {
-            var variante = await _context.Variante.FindAsync(varianteId);
+            StoreDbContext dbContext = await this.dbHelper.GetUserDbContextAsync(ConnectionString);
+            var variante = await dbContext.Variante.FindAsync(varianteId);
             if (variante == null)
             {
                 throw new NotFoundException($"Variante with ID {varianteId} not found.");
             }
 
-            var product = await _context.Products.FindAsync(variante.ProduitId);
+            var product = await dbContext.Products.FindAsync(variante.ProduitId);
             if (product == null)
             {
                 throw new NotFoundException($"Product for variante with ID {varianteId} not found.");
