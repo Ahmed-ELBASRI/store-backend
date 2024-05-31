@@ -11,7 +11,8 @@ namespace store.Services.Contract
         Task<ProductResponseDto> CreateProductAsync(ProductRequestDto productRequestDto);
         Task<ProductResponseDto> CreateProduct2Async(produitRequestDto productRequestDto);
 
-       // Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto);
+        //Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto);
+        Task<Product> GetProductByVarianteIdAsync(int varianteId);
         Task DeleteProductAsync(int id);
     }
 }

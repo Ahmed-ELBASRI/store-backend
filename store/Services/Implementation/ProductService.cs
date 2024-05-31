@@ -81,7 +81,7 @@ namespace store.Services.Implementation
 
         //    if (productRequestDto.File != null)
         //    {
-        //        var photoUrl = await _photoProduitService.UploadFileAsync(productRequestDto.File);
+        //        //var photoUrl = await _photoProduitService.UploadFileAsync(productRequestDto.File);
 
         //        if (product.PPs != null && product.PPs.Any())
         //        {
@@ -134,6 +134,22 @@ namespace store.Services.Implementation
 
 
             await _context.SaveChangesAsync();
+        }
+        public async Task<Product> GetProductByVarianteIdAsync(int varianteId)
+        {
+            var variante = await _context.Variante.FindAsync(varianteId);
+            if (variante == null)
+            {
+                throw new NotFoundException($"Variante with ID {varianteId} not found.");
+            }
+
+            var product = await _context.Products.FindAsync(variante.ProduitId);
+            if (product == null)
+            {
+                throw new NotFoundException($"Product for variante with ID {varianteId} not found.");
+            }
+
+            return product;
         }
     }
 }
