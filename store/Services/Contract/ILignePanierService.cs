@@ -9,5 +9,6 @@ namespace store.Services.Contract
         Task<LignePanier> AddLignePanier(LignePanier lignePanier);
         Task UpdateLignePanier(int id, LignePanier lignePanier);
         Task DeleteLignePanier(int id);
+        Task<List<LignePanier>> GetLignesPanierByPanierId(int panierId);
     }
 }

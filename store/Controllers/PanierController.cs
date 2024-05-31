@@ -61,6 +61,24 @@ namespace store.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("client/{clientId}")]
+        public async Task<ActionResult<PanierResponseDto>> GetPanierByClientId(int clientId)
+        {
+            try
+            {
+                var panier = await _panierService.GetPanierByClientId(clientId);
+                if (panier == null)
+                {
+                    return NotFound();
+                }
+                var panierDto = _mapper.Map<PanierResponseDto>(panier);
+                return Ok(panierDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddPanier(PanierRequestDto panierRequestDto)

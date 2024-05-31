@@ -82,23 +82,23 @@ namespace store.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, [FromForm] ProductRequestDto productRequestDto)
-        {
-            try
-            {
-                var updatedProduct = await _productService.UpdateProductAsync(id, productRequestDto);
-                return Ok(updatedProduct);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
-            }
-        }
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, [FromForm] ProductRequestDto productRequestDto)
+        //{
+        //    try
+        //    {
+        //        var updatedProduct = await _productService.UpdateProductAsync(id, productRequestDto);
+        //        return Ok(updatedProduct);
+        //    }
+        //    catch (NotFoundException ex)
+        //    {
+        //        return NotFound(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
@@ -118,12 +118,27 @@ namespace store.Controllers
             }
         }
 
-
+        [HttpGet("Product/variante/{varianteId}")]
+        public async Task<IActionResult> GetProductByVarianteId(int varianteId)
+        {
+            try
+            {
+                var product = await _productService.GetProductByVarianteIdAsync(varianteId);
+                var productResponseDto = _mapper.Map<ProductResponseDto>(product);
+                return Ok(productResponseDto);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+            }
+        }
 
     }
   
 }
-
-
 
  

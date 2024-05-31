@@ -11,5 +11,6 @@ namespace store.Services.Contract
         Task<Panier> AddPanier(Panier panier);
         Task UpdatePanier(int id, Panier panier);
         Task DeletePanier(int id);
+        Task<Panier> GetPanierByClientId(int clientId);
     }
 }
