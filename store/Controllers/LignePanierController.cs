@@ -109,5 +109,26 @@ namespace store.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("lignespanier/panier/{panierId}")]
+        public async Task<ActionResult<List<LignePanierResponseDto>>> GetLignesPanierByPanierId(int panierId)
+        {
+            try
+            {
+                var lignesPanier = await _lignePanierService.GetLignesPanierByPanierId(panierId);
+
+                if (lignesPanier == null)
+                {
+                    return NotFound();
+                }
+
+                var lignesPanierDtoList = _mapper.Map<List<LignePanierResponseDto>>(lignesPanier);
+
+                return Ok(lignesPanierDtoList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

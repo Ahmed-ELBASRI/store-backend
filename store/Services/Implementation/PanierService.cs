@@ -17,7 +17,23 @@ namespace store.Services.Implementation
         {
             _context = context;
         }
+        public async Task<Panier> GetPanierByClientId(int clientId)
+        {
+            if (clientId <= 0)
+            {
+                throw new ArgumentException("Invalid client id value, id must be greater than 0");
+            }
+            var panier = await _context.paniers
+                                       .Include(p => p.LPs)
+                                       .FirstOrDefaultAsync(p => p.ClientId == clientId);
 
+            if (panier == null)
+            {
+                throw new ArgumentException($"Panier for client with id {clientId} not found");
+            }
+
+            return panier;
+        }
         public async Task<Panier> GetPanier(int id)
         {
             if (id <= 0)

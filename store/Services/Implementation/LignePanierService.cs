@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using store.Dtos.Responce;
 using store.Helper.Data;
 using store.Models;
 using store.Services.Contract;
@@ -13,7 +14,14 @@ namespace store.Services.Implementation
         {
             _context = context;
         }
+        public async Task<List<LignePanier>> GetLignesPanierByPanierId(int panierId)
+        {
+            var lignesPanier = await _context.LignePanier
+                                             .Where(lp => lp.PanierId == panierId)
+                                             .ToListAsync();
 
+            return lignesPanier;
+        }
         public async Task<LignePanier> GetLignePanier(int id)
         {
             if (id <= 0)
