@@ -3,6 +3,7 @@ using store.Helper.Data;
 using store.Helper.Db;
 using store.Models;
 using store.Services.Contract;
+using System.Runtime.InteropServices;
 
 namespace store.Services.Implementation
 {
@@ -30,9 +31,10 @@ namespace store.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Command>> GetCommandsByClient(int clientId)
+        public async Task<IEnumerable<Command>> GetCommandsByClient(int clientId,string ConnectionString)
         {
-            return await _context.Commands.Where(c => c.ClientId == clientId).ToListAsync();
+            StoreDbContext dbContext = await this.db.GetUserDbContextAsync(ConnectionString);
+            return await dbContext.Commands.Where(c => c.ClientId == clientId).ToListAsync();
         }
         public async Task<IEnumerable<Command>> GetAllCommand(string ConnectinString)
         {
@@ -84,10 +86,10 @@ namespace store.Services.Implementation
         }
         public async Task <double> CalculerTotalCommande(int commandeId)
         {
-            var commande = _context.Commands
+            var commande = await _context.Commands
                                    .Include(c => c.LCs)
                                    .ThenInclude(lc => lc.Variante)
-                                   .FirstOrDefault(c => c.Id == commandeId);
+                                   .FirstOrDefaultAsync(c => c.Id == commandeId);
 
             if (commande == null)
             {

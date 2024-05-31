@@ -26,7 +26,7 @@ namespace store.Services.Implementation
         public async Task CreatePaiement(Paiement paiement)
         {
             _context.Paiements.Add(paiement);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeletePaiement(int id)

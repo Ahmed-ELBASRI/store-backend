@@ -66,51 +66,51 @@ namespace store.Services.Implementation
             return new ProductResponseDto { Id = product.Id, Name = product.Name, Description = product.Description, QteStock = product.QteStock, Prix = product.Prix };
         }
 
-        public async Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto)
-        {
-            var product = await _context.Products.Include(p => p.PPs).FirstOrDefaultAsync(p => p.Id == id);
-            if (product == null)
-            {
-                throw new NotFoundException($"Product with ID {id} not found.");
-            }
+        //public async Task<ProductResponseDto> UpdateProductAsync(int id, ProductRequestDto productRequestDto)
+        //{
+        //    var product = await _context.Products.Include(p => p.PPs).FirstOrDefaultAsync(p => p.Id == id);
+        //    if (product == null)
+        //    {
+        //        throw new NotFoundException($"Product with ID {id} not found.");
+        //    }
 
-            product.Name = productRequestDto.Name;
-            product.Description = productRequestDto.Description;
-            product.QteStock = productRequestDto.QteStock;
-            product.Prix = productRequestDto.Prix;
+        //    product.Name = productRequestDto.Name;
+        //    product.Description = productRequestDto.Description;
+        //    product.QteStock = productRequestDto.QteStock;
+        //    product.Prix = productRequestDto.Prix;
 
-            if (productRequestDto.File != null)
-            {
-                var photoUrl = await _photoProduitService.UploadFileAsync(productRequestDto.File);
+        //    if (productRequestDto.File != null)
+        //    {
+        //        var photoUrl = await _photoProduitService.UploadFileAsync(productRequestDto.File);
 
-                if (product.PPs != null && product.PPs.Any())
-                {
-                    product.PPs[0].UrlImage = photoUrl;
-                    _context.Entry(product.PPs[0]).State = EntityState.Modified;
-                }
-                else
-                {
-                    product.PPs = new List<PhotoProduit>
-            {
-                new PhotoProduit { UrlImage = photoUrl }
-            };
-                    _context.Entry(product.PPs[0]).State = EntityState.Added;
-                }
-            }
+        //        if (product.PPs != null && product.PPs.Any())
+        //        {
+        //            product.PPs[0].UrlImage = photoUrl;
+        //            _context.Entry(product.PPs[0]).State = EntityState.Modified;
+        //        }
+        //        else
+        //        {
+        //            product.PPs = new List<PhotoProduit>
+        //    {
+        //        new PhotoProduit { UrlImage = photoUrl }
+        //    };
+        //            _context.Entry(product.PPs[0]).State = EntityState.Added;
+        //        }
+        //    }
 
-            _context.Entry(product).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+        //    _context.Entry(product).State = EntityState.Modified;
+        //    await _context.SaveChangesAsync();
 
-            return new ProductResponseDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                QteStock = product.QteStock,
-                Prix = product.Prix,
-                Image = product.PPs?.FirstOrDefault()?.UrlImage
-            };
-        }
+        //    return new ProductResponseDto
+        //    {
+        //        Id = product.Id,
+        //        Name = product.Name,
+        //        Description = product.Description,
+        //        QteStock = product.QteStock,
+        //        Prix = product.Prix,
+        //        Image = product.PPs?.FirstOrDefault()?.UrlImage
+        //    };
+        //}
 
         public async Task DeleteProductAsync(int id)
         {

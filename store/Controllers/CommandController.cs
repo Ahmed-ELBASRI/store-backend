@@ -118,19 +118,53 @@ namespace store.Controllers
 
                 return NoContent();
         }
-        [HttpGet("client/{clientId}")]
-        public async Task<ActionResult<IEnumerable<CommandResponseDto>>> GetCommandsByClient(int clientId)
+        [HttpPost("client/{clientId}")]
+        public async Task<ActionResult<IEnumerable<CommandResponseDto>>> GetCommandsByClient(int clientId, [FromBody] JsonElement data)
         {
             try
             {
-                var commands = await _commandService.GetCommandsByClient(clientId);
-                var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
-                return Ok(commandDtos);
+                //  var connectionString = $"Data Source=.\\SQLEXPRESS;Initial Catalog={data.ConnectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+
+                //  var commands = await _commandService.GetAllCommand();
+                //  var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
+                //var options = new JsonSerializerOptions
+                //{
+                //   ReferenceHandler = ReferenceHandler.Preserve
+                //};
+                //var json = JsonSerializer.Serialize(commandDtos, options);
+                //
+                //return Ok(commandDtos);
+                //   return Ok(connectionString);
+                if (data.TryGetProperty("ConnectionString", out JsonElement connectionStringElement))
+                {
+                    string connectionString = connectionStringElement.GetString();
+                    var connectionString2 = $"Data Source=.\\SQLEXPRESS;Initial Catalog={connectionString};Integrated Security=True;Trusted_Connection=True;MultipleActiveResultSets=true;";
+                   // var commands = await _commandService.GetAllCommand(connectionString2);
+                   // var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
+
+                    var commands = await _commandService.GetCommandsByClient(clientId,connectionString2);
+                    var commandDtos = _mapper.Map<IEnumerable<CommandResponseDto>>(commands);
+                    return Ok(commandDtos);
+
+               //     return Ok(commandDtos);
+
+
+                    // Process the connectionString as needed
+                    // return Ok(new { message = "Received connection string", connectionString });
+                }
+                else
+                {
+                    return BadRequest(new { message = "ConnectionString property is missing" });
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving commands for client");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving commands");
             }
+          
+            
+                
+           
         }
         [HttpGet("{id}/total")]
         public async Task<ActionResult<double>> GetCommandTotal(int id)

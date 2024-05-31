@@ -82,23 +82,23 @@ namespace store.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, [FromForm] ProductRequestDto productRequestDto)
-        {
-            try
-            {
-                var updatedProduct = await _productService.UpdateProductAsync(id, productRequestDto);
-                return Ok(updatedProduct);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
-            }
-        }
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult<ProductResponseDto>> UpdateProduct(int id, [FromForm] ProductRequestDto productRequestDto)
+        //{
+        //    try
+        //    {
+        //        var updatedProduct = await _productService.UpdateProductAsync(id, productRequestDto);
+        //        return Ok(updatedProduct);
+        //    }
+        //    catch (NotFoundException ex)
+        //    {
+        //        return NotFound(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)

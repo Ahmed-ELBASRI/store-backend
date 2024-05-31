@@ -11,7 +11,7 @@ namespace store.Services.Contract
         Task<bool> AnnulerCommande(int commandeId);
         Task<double> CalculerTotalCommande(int commandeId);
 
-        Task<IEnumerable<Command>> GetCommandsByClient(int clientId);
+        Task<IEnumerable<Command>> GetCommandsByClient(int clientId,string ConnectionString);
     }
     
 }
